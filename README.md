@@ -68,18 +68,24 @@ participant PR as ProductRepository
 participant AR as AnalyticRepository
 
 UI ->> UI: id
-UI ->> UI: money
-UI ->> PS: retrieveProduct( id, money )
-PS ->> PR: findProductById( id )
-PR ->> PS: Product
-alt Product not found
-    PS ->> UI: ProductNotFoundException
-else Product.quantity == 0
-    PS ->> UI: ZeroStockException
-else money < Product.price
-    PS ->> UI: NotEnoughMoneyException
-end
-PS ->> PR: decreaseQuantity( id )
+        UI ->> PS: isValid( id )
+    PS ->> PR: exist( id )
+        PS ->> PR: hasStock ( id )
+        PR ->> PS: true / false
+    alt Product not found
+        PS ->> UI: ProductNotFoundException
+    else Product.quantity == 0
+        PS ->> UI: ZeroStockException
+    end
+    UI ->> UI: money
+    UI ->> PS: retrieveProduct( id, money )
+    PS ->> PR: findProductById( id )
+    PR ->> PS: Product
+    alt money < Product.price
+        PS ->> UI: NotEnoughMoneyException
+    end
+
+    PS ->> PR: decreaseQuantity( id )
 PS ->> AR: increaseTotalAmountBy( money - change )
 PS ->> UI: Product, change
 ```

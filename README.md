@@ -132,20 +132,24 @@ end
 sequenceDiagram
 participant UI
 participant PS as ProductService
-participant AR as AuthorizationRepo
+participant AR as AnalyticRepo
         
 UI --> UI: Welcome
-loop cmd != 00
+loop cmd != 00 <br> (terminate)
     UI ->> UI: cmd
     alt cmd == 01
         UI ->> UI: id
         UI ->> UI: quantity
         UI ->> PS: updateQuantity( id, quantity )
+        PS ->> UI: true / false
+        UI ->> UI: "Product updated successfully"
     end
     alt cmd == 02
         UI ->> UI: id
         UI ->> UI: price
         UI ->> PS: updatePrice ( id, price )
+        PS ->> UI: true / false
+        UI ->> UI: "Product updated successfully"
     end
         
     Note right of UI: / updateId & updateName /
@@ -155,6 +159,7 @@ loop cmd != 00
         PS ->> AR: retrieveAllEarnings( AuthorisedUser )
         AR ->> PS: totalEarnings
         PS ->> UI: totalEarnings
+        UI ->> UI: "Earnings retrieved"
         Note right of AR: track data of authorized user <br> retrieving this amount of earnings 
         AR ->> AR: totalEarnings = 0
     end
@@ -164,6 +169,7 @@ loop cmd != 00
             PS ->> AR: topThreeProducts()
             AR ->> PS: list[product, sales]
             PS ->> UI: list[product, sales]
+            UI ->> UI: show top products
     end
 end
 ```

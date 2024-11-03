@@ -21,13 +21,13 @@ Output:
 
 ### Update products
 ```
-Authorized User
+*Authorized User
 Can update products: ID, NAME, PRICE, QUANTITY
 ```
 
 ### Get all money inside the machine
 ```
-Input: Authorized User
+Input: Authorized User, Command
 ```
 
 ### Analytics
@@ -85,10 +85,10 @@ UI ->> UI: id
     UI ->> UI: money
 
     UI ->> PS: canAfford( id, money )
-    PS ->> PR: findProductById( id )
-    PR ->> PS: Product
+    PS ->> PR: getPriceOfProduct( id )
+        PR ->>PS: product price
 
-    alt money < Product.price
+    alt money < product price
         PS ->> UI: NotEnoughMoneyException
     end
     UI ->> PS: retrieveProduct( id, money )
@@ -97,6 +97,7 @@ UI ->> UI: id
 
     PS ->> PR: decreaseQuantity( id )
 PS ->> AR: increaseTotalAmountBy( money - change )
+        Note right of PS: Transaction Boundary
 PS ->> PS: calculateChange( money - change )
 PS ->> UI: Product, change
 UI ->> UI: showMsg( success / fail )   
@@ -131,6 +132,7 @@ end
 sequenceDiagram
 participant UI
 participant PS as ProductService
+participant AR as AuthorizationRepo
         
 UI --> UI: Welcome
 loop cmd != 00
@@ -139,6 +141,29 @@ loop cmd != 00
         UI ->> UI: id
         UI ->> UI: quantity
         UI ->> PS: updateQuantity( id, quantity )
+    end
+    alt cmd == 02
+        UI ->> UI: id
+        UI ->> UI: price
+        UI ->> PS: updatePrice ( id, price )
+    end
+        
+    Note right of UI: / updateId & updateName /
+        
+    alt cmd == 10
+        UI ->> PS: retrieveAllEarnings( AuthorisedUser )
+        PS ->> AR: retrieveAllEarnings( AuthorisedUser )
+        AR ->> PS: totalEarnings
+        PS ->> UI: totalEarnings
+        Note right of AR: track data of authorized user <br> retrieving this amount of earnings 
+        AR ->> AR: totalEarnings = 0
+    end
+        
+    alt cmd == 20
+            UI ->> PS: topThreeProducts()
+            PS ->> AR: topThreeProducts()
+            AR ->> PS: list[product, sales]
+            PS ->> UI: list[product, sales]
     end
 end
 ```

@@ -23,6 +23,11 @@ Output:
 ```
 *Authorized User
 Can update products: ID, NAME, PRICE, QUANTITY
+
+Output:
+    AUTHORIZATION_FAILED
+    PRODUCT_NOT_FOUND
+    INVALID_QUANTITY
 ```
 
 ### Get all money inside the machine
@@ -33,7 +38,7 @@ Input: Authorized User, Command
 ### Analytics
 ```
 Top 3 most brough products
-Total Money
+Total Earnings
 ```
 
 ## Technical Documentation
@@ -89,7 +94,7 @@ alt money < Product price
 end
 
 PS ->> PR: decreaseQuantity( id )
-PS ->> AR: increaseTotalAmountBy( money - change )
+PS ->> AR: increaseTotalEarningsBy( money - change )
 PS ->> PS: calculateChange( money - change )
 PS ->> UI: Product, change
 ```
@@ -114,17 +119,18 @@ end
 ```
 
 #### Command Table
-| ID | ACTION                      |
-|----|-----------------------------|
-| 00 | exit()                      |
-| 01 | updateQuantity()            |
-| 02 | updatePrice()               |
-| 03 | updateId()                  |
-| 04 | updateName()                |
-| 10 | addProduct()                |
-| 20 | removeProduct()             |
-| 30 | retrieveMoney               |
-| 40 | topThreeMostSellingProducts |
+| ID | ACTION                        |
+|----|-------------------------------|
+| 00 | exit()                        |
+| 01 | updateQuantity()              |
+| 02 | updatePrice()                 |
+| 03 | updateId()                    |
+| 04 | updateName()                  |
+| 10 | addProduct()                  |
+| 20 | removeProduct()               |
+| 30 | topThreeMostSellingProducts() |
+| 40 | totalIncome()                 |
+| 50 | retrieveMoney()               |
 
 
 #### Step 2.
@@ -232,8 +238,8 @@ sequenceDiagram
     participant PS as ProductService
     participant PR as ProductRepo
     alt cmd == 10
-        UI ->> PS: removeProduct( id )
-        PS ->> PR: removeProduct( id )
+        UI ->> PS: addProduct( id )
+        PS ->> PR: addProduct( id )
     end
 
 ```
@@ -246,28 +252,10 @@ participant PS as ProductService
 participant PR as ProductRepo
 alt cmd == 20 
     UI ->> PS: removeProduct( id )
-        PS ->> PR: removeProduct( id )
+    PS ->> PR: removeProduct( id )
 end
 ```
 
-### retrieveMoney
-```mermaid
-sequenceDiagram
-    participant UI
-    participant PS as ProductService
-    participant AR as AnalyticRepo
-
-
-    alt cmd == 30
-        UI ->> PS: retrieveAllEarnings( AuthorisedUser )
-        PS ->> AR: retrieveAllEarnings( AuthorisedUser )
-        AR ->> PS: totalEarnings
-        PS ->> UI: totalEarnings
-        UI ->> UI: "Earnings retrieved"
-        Note right of AR: track data of authorized user <br> retrieving this amount of earnings
-        AR ->> AR: totalEarnings = 0
-    end
-```
 
 ### TopThreeProducts
 ```mermaid
@@ -276,7 +264,7 @@ sequenceDiagram
     participant PS as ProductService
     participant AR as AnalyticRepo
 
-    alt cmd == 40
+    alt cmd == 30
             UI ->> PS: topThreeProducts()
             PS ->> AR: topThreeProducts()
             AR ->> PS: list[product, sales]
@@ -284,4 +272,36 @@ sequenceDiagram
     end
 ```
 
+### totalEarnings
+```mermaid
+sequenceDiagram
+participant UI
+participant PS as ProductService
+participant AR as AnalyticRepo
 
+alt cmd == 40
+    UI ->> PS: totalEarnings()
+    PS ->> AR: totalEarnings()
+    AR ->> PS: total Earnings
+    PS ->> UI: total Earnings
+end
+```
+
+### retrieveMoney
+//TODO: TRACK DATA OF USER
+```mermaid
+sequenceDiagram
+participant UI
+participant PS as ProductService
+participant AR as AnalyticRepo
+
+
+alt cmd == 50
+UI ->> PS: retrieveAllEarnings( AuthorisedUser )
+PS ->> AR: retrieveAllEarnings( AuthorisedUser )
+AR ->> PS: availableEarnings
+PS ->> UI: availableEarnings
+Note right of AR: track data of authorized user <br> retrieving this amount of earnings
+AR ->> AR: availableEarnings = 0
+end
+```

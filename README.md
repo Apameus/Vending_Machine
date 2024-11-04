@@ -74,7 +74,7 @@ participant AR as AnalyticRepository
 
 UI ->> UI: id
 UI ->> PS: verifyProductAvailability( id )
-PS ->> PR: findProductBy( id, password )
+PS ->> PR: findProductBy( id )
 PR ->> PS: Product
         
 alt Product not found
@@ -94,8 +94,9 @@ alt money < Product price
 end
 
 PS ->> PR: decreaseQuantity( id )
-PS ->> AR: increaseTotalEarningsBy( money - change )
-PS ->> PS: calculateChange( money - change )
+PS ->> AR: increaseSales(id)
+    PS ->> PS: calculateChange( money - Product.price() )
+    PS ->> AR: increaseTotalEarningsBy( Product.price() )
 PS ->> UI: Product, change
 ```
 

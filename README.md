@@ -1,4 +1,4 @@
-# Vending Machine
+ # Vending Machine
 
 ## Functional Requirements
 
@@ -124,7 +124,7 @@ end
 | 04 | updateName()                |
 | 10 | addProduct()                |
 | 20 | removeProduct()             |
-| 30 | retreiveMoney               |
+| 30 | retrieveMoney               |
 | 40 | topThreeMostSellingProducts |
 
 
@@ -132,50 +132,160 @@ end
 
 
 ## Commands
+
+### exit
 ```mermaid
 sequenceDiagram
-participant UI
-participant PS as ProductService
-participant AR as AnalyticRepo
-        
 UI --> UI: Welcome
-loop cmd != 00 <br> (terminate)
-    UI ->> UI: cmd
-    alt cmd == 01
-        UI ->> UI: id
-        UI ->> UI: quantity
-        UI ->> PS: updateQuantity( id, quantity )
-        PS ->> UI: true / false
-        UI ->> UI: "Product updated successfully"
+loop cmd != 00 
+UI ->> UI: cmd
+end
+```
+
+
+### updateQuantity
+```mermaid
+sequenceDiagram
+    participant UI
+    participant PS as ProductService
+    participant PR as ProductRepo 
+    
+alt cmd == 01
+UI ->> UI: id
+UI ->> UI: quantity
+UI ->> PS: updateQuantity( id, quantity )
+PS ->> PR: updateQuantity ( id, quantity )
+    PR ->> PS: Product
+    alt Product.quantity() + quantity <= 10
+        PS ->> UI: machineOverloadedException
     end
+    alt invalid id
+    PS ->> UI: productNotFoundException
+end
+UI ->> UI: "Product updated successfully"
+end
+```
+
+### updatePrice
+```mermaid
+sequenceDiagram
+    participant UI
+    participant PS as ProductService
+    participant PR as ProductRepo
+    
     alt cmd == 02
         UI ->> UI: id
         UI ->> UI: price
         UI ->> PS: updatePrice ( id, price )
-        PS ->> UI: true / false
+        PS ->> PR: updatePrice ( id, price )
+        PR ->> PS: Product
+        alt invalid id
+                PS ->> UI: productNotFoundException
+        end
         UI ->> UI: "Product updated successfully"
     end
-        
-    Note right of UI: / updateId & updateName /
-        
+
+```
+
+### updateId
+```mermaid
+sequenceDiagram
+    participant UI
+    participant PS as ProductService
+    participant PR as ProductRepo
+
+    alt cmd == 03
+        UI ->> UI: id
+        UI ->> UI: newId
+        UI ->> PS: updateId ( id, newId )
+        PS ->> PR: updateId ( id, newId )
+        PR ->> PS: Product
+        alt invalid id
+            PS ->> UI: productNotFoundException
+        end
+        UI ->> UI: "Product updated successfully"
+    end
+
+```
+
+### updateName
+```mermaid
+sequenceDiagram
+    participant UI
+    participant PS as ProductService
+    participant PR as ProductRepo
+    
+    alt cmd == 04
+        UI ->> UI: id
+        UI ->> UI: name
+        UI ->> PS: updateName ( id, name )
+        PS ->> PR: updateName ( id, name )
+        PR ->> PS: Product
+        alt invalid id
+            PS ->> UI: productNotFoundException
+        end
+        UI ->> UI: "Product updated successfully"
+    end
+
+```
+
+### addProduct
+```mermaid
+sequenceDiagram
+    participant UI
+    participant PS as ProductService
+    participant PR as ProductRepo
     alt cmd == 10
+        UI ->> PS: removeProduct( id )
+        PS ->> PR: removeProduct( id )
+    end
+
+```
+
+### removeProduct
+```mermaid
+sequenceDiagram
+participant UI
+participant PS as ProductService
+participant PR as ProductRepo
+alt cmd == 20 
+    UI ->> PS: removeProduct( id )
+        PS ->> PR: removeProduct( id )
+end
+```
+
+### retrieveMoney
+```mermaid
+sequenceDiagram
+    participant UI
+    participant PS as ProductService
+    participant AR as AnalyticRepo
+
+
+    alt cmd == 30
         UI ->> PS: retrieveAllEarnings( AuthorisedUser )
         PS ->> AR: retrieveAllEarnings( AuthorisedUser )
         AR ->> PS: totalEarnings
         PS ->> UI: totalEarnings
         UI ->> UI: "Earnings retrieved"
-        Note right of AR: track data of authorized user <br> retrieving this amount of earnings 
+        Note right of AR: track data of authorized user <br> retrieving this amount of earnings
         AR ->> AR: totalEarnings = 0
     end
-        
-    alt cmd == 20
+```
+
+### TopThreeProducts
+```mermaid
+sequenceDiagram
+    participant UI
+    participant PS as ProductService
+    participant AR as AnalyticRepo
+
+    alt cmd == 40
             UI ->> PS: topThreeProducts()
             PS ->> AR: topThreeProducts()
             AR ->> PS: list[product, sales]
             PS ->> UI: list[product, sales]
-            UI ->> UI: show top products
     end
-end
 ```
 
 

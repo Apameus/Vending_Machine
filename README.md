@@ -69,7 +69,7 @@ participant AR as AnalyticRepository
 
 UI ->> UI: id
 UI ->> PS: verifyProductAvailability( id )
-PS ->> PR: findProductById( id )
+PS ->> PR: findProductBy( id, password )
 PR ->> PS: Product
         
 alt Product not found
@@ -92,7 +92,6 @@ PS ->> PR: decreaseQuantity( id )
 PS ->> AR: increaseTotalAmountBy( money - change )
 PS ->> PS: calculateChange( money - change )
 PS ->> UI: Product, change
-UI ->> UI: showMsg( success / fail )   
 ```
 
 ### Update products
@@ -154,15 +153,15 @@ alt cmd == 01
 UI ->> UI: id
 UI ->> UI: quantity
 UI ->> PS: updateQuantity( id, quantity )
-PS ->> PR: updateQuantity ( id, quantity )
+PS ->> PR: findProduct ( id )
     PR ->> PS: Product
-    alt Product.quantity() + quantity <= 10
-        PS ->> UI: machineOverloadedException
-    end
     alt invalid id
-    PS ->> UI: productNotFoundException
-end
-UI ->> UI: "Product updated successfully"
+        PS ->> UI: ProductNotFoundException
+    end
+    alt Product.quantity() + quantity <= 10
+        PS ->> UI: MachineOverloadedException
+    end
+        PS ->> PR: updateQuantity( id, quantity )
 end
 ```
 
@@ -178,11 +177,10 @@ sequenceDiagram
         UI ->> UI: price
         UI ->> PS: updatePrice ( id, price )
         PS ->> PR: updatePrice ( id, price )
-        PR ->> PS: Product
         alt invalid id
-                PS ->> UI: productNotFoundException
+            PR ->> PS: ProductNotFoundException
+            PS ->> UI: ProductNotFoundException
         end
-        UI ->> UI: "Product updated successfully"
     end
 
 ```
@@ -203,7 +201,6 @@ sequenceDiagram
         alt invalid id
             PS ->> UI: productNotFoundException
         end
-        UI ->> UI: "Product updated successfully"
     end
 
 ```
@@ -224,7 +221,6 @@ sequenceDiagram
         alt invalid id
             PS ->> UI: productNotFoundException
         end
-        UI ->> UI: "Product updated successfully"
     end
 
 ```

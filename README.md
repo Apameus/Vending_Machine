@@ -288,7 +288,6 @@ end
 ```
 
 ### retrieveMoney
-//TODO: TRACK DATA OF USER
 ```mermaid
 sequenceDiagram
 participant UI
@@ -297,11 +296,11 @@ participant AR as AnalyticRepo
 
 
 alt cmd == 50
-UI ->> PS: retrieveAllEarnings( AuthorisedUser )
-PS ->> AR: retrieveAllEarnings( AuthorisedUser )
-AR ->> PS: availableEarnings
-PS ->> UI: availableEarnings
-Note right of AR: track data of authorized user <br> retrieving this amount of earnings
+UI ->> PS: retrieveAllEarnings( userId )
+PS ->> AR: retrieveAllEarnings( userId )
+    PS ->> AR: trackMoneyMovement( userId, availableEarnings )
+    AR ->> PS: availableEarnings
+    PS ->> UI: availableEarnings
 AR ->> AR: availableEarnings = 0
 end
 ```

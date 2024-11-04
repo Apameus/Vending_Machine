@@ -68,42 +68,36 @@ participant PR as ProductRepository
 participant AR as AnalyticRepository
 
 UI ->> UI: id
-        UI ->> PS: exist( id )
-    PS ->> PR: exist( id )
-    PR ->> PS: true / false
-    alt Product not found
-        PS ->> UI: ProductNotFoundException
-    end
+UI ->> PS: verifyProductAvailability( id )
+PS ->> PR: findProductById( id )
+PR ->> PS: Product
+        
+alt Product not found
+    PS ->> UI: ProductNotFoundException
+end
+alt Product.quantity == 0
+    PS ->> UI: ZeroStockException
+end
+UI ->> UI: money
 
-    UI ->> PS: hasStock ( id )
-    PS ->> PR: hasStock ( id )
 
-    PR ->> PS: true / false
-    alt Product.quantity == 0
-        PS ->> UI: ZeroStockException
-    end
-    UI ->> UI: money
+UI ->> PS: retrieveProduct( id, money )
+PS ->> PR: findProductById( id )
+PR ->> PS: Product
+alt money < Product price
+    PS ->> UI: NotEnoughMoneyException
+end
 
-    UI ->> PS: canAfford( id, money )
-    PS ->> PR: getPriceOfProduct( id )
-        PR ->>PS: product price
-
-    alt money < product price
-        PS ->> UI: NotEnoughMoneyException
-    end
-    UI ->> PS: retrieveProduct( id, money )
-    PS ->> PR: findProductById( id )
-    PR ->> PS: Product
-
-    PS ->> PR: decreaseQuantity( id )
+PS ->> PR: decreaseQuantity( id )
 PS ->> AR: increaseTotalAmountBy( money - change )
-        Note right of PS: Transaction Boundary
 PS ->> PS: calculateChange( money - change )
 PS ->> UI: Product, change
 UI ->> UI: showMsg( success / fail )   
 ```
 
 ### Update products
+
+#### Step 1. Authorize
 ```mermaid
 sequenceDiagram
 participant UI
@@ -111,21 +105,31 @@ participant AS as AuthorizationService
 participant AR as AuthorizationRepository
         
 UI ->> UI: userId (16 digits)
-UI ->> AS: authorizeUser( userId )
-AS ->> AR: findUserById( userId )
-alt User not found
-    AR ->> AS: UserNotFoundException
-    AS ->> UI: UserNotFoundException
-end
-
 UI ->> UI: password
-UI ->> AS: authorizeUser ( userId, password )
-AS ->> AR: findUserBy( userId, password )
-alt Wrong password
-    AR ->> AS: AuthorizationFailedException
+UI ->> AS: authorizeUser ( userId password )
+AS ->> AR: findUserBy( userId )
+AR ->> AS: User
+alt User not found OR User.password != password
     AS ->> UI: AuthorizationFailedException
 end
 ```
+
+#### Command Table
+| ID | ACTION                      |
+|----|-----------------------------|
+| 00 | exit()                      |
+| 01 | updateQuantity()            |
+| 02 | updatePrice()               |
+| 03 | updateId()                  |
+| 04 | updateName()                |
+| 10 | addProduct()                |
+| 20 | removeProduct()             |
+| 30 | retreiveMoney               |
+| 40 | topThreeMostSellingProducts |
+
+
+#### Step 2.
+
 
 ## Commands
 ```mermaid

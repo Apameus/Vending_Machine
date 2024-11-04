@@ -300,6 +300,9 @@ UI ->> PS: retrieveAllEarnings( userId )
 PS ->> AR: retrieveAllEarnings( userId )
     PS ->> AR: trackMoneyMovement( userId, availableEarnings )
     AR ->> PS: availableEarnings
+        alt availableEarning == 0
+        PS ->> UI: zeroAvailableEarningsException
+        end
     PS ->> UI: availableEarnings
 AR ->> AR: availableEarnings = 0
 end

@@ -27,6 +27,7 @@ public final class ProductRepositoryImpl implements ProductRepository{
         Product product = productCache.get(productId);
         Product productWithDecreasedQuantity = productCache.get(productId).updateQuantity(product.quantity() - 1);
         productCache.put(productId, productWithDecreasedQuantity);
+
     }
 
 

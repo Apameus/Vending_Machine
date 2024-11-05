@@ -11,7 +11,7 @@ import java.util.List;
 public final class ProductSerializerImpl implements ProductSerializer{
 
     @Override
-    public HashMap<Integer,Product> parseAll() throws IOException {
+    public HashMap<Integer,Product> parseAllProducts() throws IOException {
         HashMap<Integer,Product> productMap = new HashMap<>();
         List<String> lines = Files.readAllLines(Path.of("src/main/resources/Products.txt"));
         lines.forEach(line -> {

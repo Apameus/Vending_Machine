@@ -10,7 +10,7 @@ import java.util.List;
 
 public final class AuthorizationSerializerImpl implements AuthorizationSerializer{
     @Override
-    public HashMap<Integer, AuthorizedUser> parseAll() throws IOException {
+    public HashMap<Integer, AuthorizedUser> parseAllUsers() throws IOException {
         HashMap<Integer,AuthorizedUser> userMap = new HashMap<>();
         Path path = Path.of("src/main/resources/AuthorizedUsers");
         List<String> lines = Files.readAllLines(path);

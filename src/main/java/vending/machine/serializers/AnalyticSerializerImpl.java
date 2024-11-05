@@ -27,10 +27,13 @@ public final class AnalyticSerializerImpl implements AnalyticSerializer{
     }
 
     @Override
-    public List<Sale> parseAllSales() throws IOException {
-        List<Sale> sales = new ArrayList<>();
+    public HashMap<Integer,Sale> parseAllSales() throws IOException {
+        HashMap<Integer,Sale> sales = new HashMap<>();
         List<String> lines = Files.readAllLines(Path.of("src/main/resources/Sales"));
-        lines.forEach(line -> sales.add(parseSale(line)));
+        lines.forEach(line -> {
+            Sale sale = parseSale(line);
+            sales.put(sale.productId(), sale);
+        });
         return sales;
     }
 
@@ -41,10 +44,13 @@ public final class AnalyticSerializerImpl implements AnalyticSerializer{
     }
 
     @Override
-    public List<UserMovement> parseAllUserMovement() throws IOException {
-        List<UserMovement> movements = new ArrayList<>();
+    public HashMap<Integer,UserMovement> parseAllUserMovement() throws IOException {
+        HashMap<Integer, UserMovement> movements = new HashMap<>();
         List<String> lines = Files.readAllLines(Path.of("src/main/resources/UserMovement"));
-        lines.forEach(line -> movements.add(parseUserMovement(line)));
+        lines.forEach(line -> {
+            UserMovement userMovement = parseUserMovement(line);
+            movements.put(userMovement.userId(), userMovement);
+        });
         return movements;
     }
 

@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public interface ProductSerializer {
 
-    HashMap<Integer,Product> parseAll() throws IOException;
+    HashMap<Integer,Product> parseAllProducts() throws IOException;
     Product parse(String line);
 
     void serializeAll(HashMap<Integer,Product> productCache);

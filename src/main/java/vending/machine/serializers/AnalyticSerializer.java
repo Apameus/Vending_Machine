@@ -14,10 +14,10 @@ public interface AnalyticSerializer {
     Float parseTotalEarnings() throws IOException;
     void serializeTotalEarnings(Float totalEarnings) throws IOException;
 
-    List<Sale> parseAllSales() throws IOException;
+    HashMap<Integer,Sale> parseAllSales() throws IOException;
     Sale parseSale(String line);
 
-    List<UserMovement> parseAllUserMovement() throws IOException;
+    HashMap<Integer,UserMovement> parseAllUserMovement() throws IOException;
     UserMovement parseUserMovement(String line);
 
 

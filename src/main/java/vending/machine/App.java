@@ -14,9 +14,9 @@ public final class App {
         AnalyticSerializer analyticSerializer = new AnalyticSerializerImpl();
         AuthorizationSerializer authorizationSerializer = new AuthorizationSerializerImpl();
 
-        ProductRepository productRepository = new ProductRepositoryImpl(productSerializer.parseAll());
-        AnalyticRepository analyticRepository = new AnalyticRepositoryImpl(analyticSerializer.parseAllSales(), analyticSerializer.parseAllUserMovement());
-        AuthorizationRepository authorizationRepository = new AuthorizationRepositoryImpl(authorizationSerializer.parseAll());
+        ProductRepository productRepository = new ProductRepositoryImpl(productSerializer.parseAllProducts());
+        AnalyticRepository analyticRepository = new AnalyticRepositoryImpl(analyticSerializer.parseAllSales(), analyticSerializer.parseTotalEarnings());
+        AuthorizationRepository authorizationRepository = new AuthorizationRepositoryImpl(authorizationSerializer.parseAllUsers());
 
         ProductService productService = new ProductServiceImpl(productRepository, analyticRepository);
         AnalyticService analyticService = new AnalyticServiceImpl();

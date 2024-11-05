@@ -4,9 +4,12 @@ import vending.machine.data.Product;
 import vending.machine.serializers.ProductSerializer;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public final class ProductRepositoryImpl implements ProductRepository{
     private final HashMap<Integer, Product> productCache;
@@ -17,7 +20,7 @@ public final class ProductRepositoryImpl implements ProductRepository{
         this.serializer = serializer;
         this.path = path;
         try {
-            productCache = serializer.parseAllProducts(path);
+            productCache = parseAllProducts();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -38,8 +41,30 @@ public final class ProductRepositoryImpl implements ProductRepository{
         Product product = productCache.get(productId);
         Product productWithDecreasedQuantity = productCache.get(productId).updateQuantity(product.quantity() - 1);
         productCache.put(productId, productWithDecreasedQuantity);
-        serializer.serializeAll(productCache, path);
+        serializeAll();
     }
 
 
+    //TODO: parseAll
+    public HashMap<Integer,Product> parseAllProducts() throws IOException {
+        HashMap<Integer,Product> productMap = new HashMap<>();
+        List<String> lines = Files.readAllLines(path);
+        lines.forEach(line -> {
+            Product product = serializer.parse(line);
+            productMap.put(product.id(), product);
+        });
+        return productMap;
+    }
+
+
+    //TODO: serializeAll
+    public void serializeAll(){
+        List<String> lines = new ArrayList<>();
+        productCache.forEach((integer, product) -> lines.add(serializer.serialize(product)));
+        try {
+            Files.write(path, lines);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

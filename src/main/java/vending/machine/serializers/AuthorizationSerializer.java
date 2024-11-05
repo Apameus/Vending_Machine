@@ -10,6 +10,6 @@ public interface AuthorizationSerializer {
     HashMap<Integer, AuthorizedUser> parseAllUsers(Path path) throws IOException;
     AuthorizedUser parse(String line);
 
-    void serializeAll(HashMap<Integer,AuthorizedUser> authorizedUserCache, Path path);
-    void serialize(AuthorizedUser authorizedUser, Path path);
+//    void serializeAll(HashMap<Integer,AuthorizedUser> authorizedUserCache, Path path);
+//    void serialize(AuthorizedUser authorizedUser, Path path);
 }

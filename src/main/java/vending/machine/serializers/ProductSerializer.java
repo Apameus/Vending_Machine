@@ -2,15 +2,9 @@ package vending.machine.serializers;
 
 import vending.machine.data.Product;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.HashMap;
-
 public interface ProductSerializer {
 
-    HashMap<Integer,Product> parseAllProducts(Path path) throws IOException;
     Product parse(String line);
 
-    void serializeAll(HashMap<Integer,Product> productCache, Path path);
-    void serialize(Product product, Path path);
+    String serialize(Product product);
 }

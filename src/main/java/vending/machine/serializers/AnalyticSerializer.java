@@ -1,29 +1,25 @@
 package vending.machine.serializers;
 
-import vending.machine.data.Product;
 import vending.machine.data.Sale;
 import vending.machine.data.UserMovement;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.nio.file.Path;
 
 public interface AnalyticSerializer {
 
-    Float parseTotalEarnings() throws IOException;
-    void serializeTotalEarnings(Float totalEarnings) throws IOException;
+    Float parseTotalEarnings(Path path) throws IOException;
+    void serializeTotalEarnings(Float totalEarnings, Path path) throws IOException;
 
-    HashMap<Integer,Sale> parseAllSales() throws IOException;
+
+//    HashMap<Integer,Sale> parseAllSales(Path path) throws IOException;
     Sale parseSale(String line);
+//    void serializeAllSales(HashMap<Integer,Sale> saleCache, Path path);
+    String serializeSale(Sale sale);
 
-    HashMap<Integer,UserMovement> parseAllUserMovement() throws IOException;
+
+//    HashMap<Integer,UserMovement> parseAllUserMovement(Path path) throws IOException;
     UserMovement parseUserMovement(String line);
-
-
-    void serializeAllSales(List<Sale> saleCache);
-    void serializeSale(Sale sale) throws IOException;
-
-    void serializeAllUserMovement(HashMap<Integer,Integer> userMovementCache);
-    void serializeUserMovement(UserMovement userMovement) throws IOException;
+//    void serializeAllUserMovement(HashMap<Integer,Integer> userMovementCache, Path path);
+    void serializeUserMovement(UserMovement userMovement, Path path) throws IOException;
 }

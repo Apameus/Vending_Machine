@@ -6,6 +6,7 @@ import vending.machine.services.*;
 import vending.machine.ui.TerminalUI;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 public final class App {
 
@@ -14,12 +15,12 @@ public final class App {
         AnalyticSerializer analyticSerializer = new AnalyticSerializerImpl();
         AuthorizationSerializer authorizationSerializer = new AuthorizationSerializerImpl();
 
-        ProductRepository productRepository = new ProductRepositoryImpl(productSerializer.parseAllProducts());
-        AnalyticRepository analyticRepository = new AnalyticRepositoryImpl(analyticSerializer.parseAllSales(), analyticSerializer.parseTotalEarnings());
-        AuthorizationRepository authorizationRepository = new AuthorizationRepositoryImpl(authorizationSerializer.parseAllUsers());
+        ProductRepository productRepository = new ProductRepositoryImpl(Path.of("src/main/resources/Products.txt"), productSerializer);
+        AnalyticRepository analyticRepository = new AnalyticRepositoryImpl(Path.of("src/main/resources/Sales"), Path.of("src/main/resources/TotalEarnings"),analyticSerializer);
+        AuthorizationRepository authorizationRepository = new AuthorizationRepositoryImpl(Path.of("src/main/resources/AuthorizedUsers"), authorizationSerializer);
 
         ProductService productService = new ProductServiceImpl(productRepository, analyticRepository);
-        AnalyticService analyticService = new AnalyticServiceImpl();
+        AnalyticService analyticService = new AnalyticServiceImpl(); //EMPTY
         AuthorizationService authorizationService = new AuthorizationServiceImpl(authorizationRepository);
 
         TerminalUI terminalUI = new TerminalUI(System.console(), productService, analyticService, authorizationService);

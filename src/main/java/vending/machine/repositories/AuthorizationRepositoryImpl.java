@@ -9,7 +9,6 @@ import java.util.HashMap;
 
 public final class AuthorizationRepositoryImpl implements AuthorizationRepository{
     private final HashMap<Integer,AuthorizedUser> authorizedUsersCache;
-    private HashMap<Integer,UserMovement> userMovements; //TODO: is this the right place?
 
 
     public AuthorizationRepositoryImpl(Path path, AuthorizationSerializer serializer) {

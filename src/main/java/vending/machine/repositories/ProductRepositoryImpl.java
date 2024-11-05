@@ -21,7 +21,7 @@ public final class ProductRepositoryImpl implements ProductRepository{
         return productCache.get(productId);
     }
 
-    //TODO: REFACTOR
+    //TODO: REFACTOR & Serialize
     @Override
     public void decreaseQuantity(int productId) {
         Product product = productCache.get(productId);

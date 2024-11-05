@@ -73,6 +73,9 @@ participant PR as ProductRepository
 participant AR as AnalyticRepository
 
 UI ->> UI: id
+alt id.length == 16
+    Note right of UI: AuthorizeUser
+end
 UI ->> PS: verifyProductAvailability( id )
 PS ->> PR: findProductBy( id )
 PR ->> PS: Product

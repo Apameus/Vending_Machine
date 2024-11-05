@@ -12,6 +12,6 @@ public interface ProductSerializer {
     HashMap<Integer,Product> parseAll() throws IOException;
     Product parse(String line);
 
-    void serializeAll(List<Product> productList);
+    void serializeAll(HashMap<Integer,Product> productList);
     void serialize(Product product);
 }

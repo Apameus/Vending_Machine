@@ -5,35 +5,34 @@ import vending.machine.data.Product;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class ProductSerializerImpl implements ProductSerializer{
 
     @Override
     public HashMap<Integer,Product> parseAll() throws IOException {
-        HashMap<Integer,Product> productList = new HashMap<>();
+        HashMap<Integer,Product> productMap = new HashMap<>();
         List<String> lines = Files.readAllLines(Path.of("src/main/resources/Products.txt"));
         lines.forEach(line -> {
             Product product = parse(line);
-            productList.put(product.id(), product);
+            productMap.put(product.id(), product);
         });
-        return productList;
+        return productMap;
     }
-
-    @Override
-    public void serializeAll(List<Product> productList){
-        productList.forEach(this::serialize);
-    }
-
 
     @Override
     public Product parse(String line) {
         String[] values = line.split(",");
         return new Product(Integer.parseInt(values[0]), values[1], Float.parseFloat(values[2]), Integer.parseInt(values[3]));
     }
+
+
+    @Override
+    public void serializeAll(HashMap<Integer,Product> productCache){
+        productCache.forEach((integer, product) -> serialize(product));
+    }
+
 
     @Override
     public void serialize(Product product) {

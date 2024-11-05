@@ -1,4 +1,4 @@
 package vending.machine.data;
 
-public record AuthorizedUser(int userId, String password) {
+public record AuthorizedUser(String name, int userId, String password) {
 }

@@ -10,9 +10,8 @@ import java.util.List;
 
 public final class AuthorizationSerializerImpl implements AuthorizationSerializer{
     @Override
-    public HashMap<Integer, AuthorizedUser> parseAllUsers() throws IOException {
+    public HashMap<Integer, AuthorizedUser> parseAllUsers(Path path) throws IOException {
         HashMap<Integer,AuthorizedUser> userMap = new HashMap<>();
-        Path path = Path.of("src/main/resources/AuthorizedUsers");
         List<String> lines = Files.readAllLines(path);
         lines.forEach(line -> {
             AuthorizedUser user = parse(line);
@@ -28,15 +27,14 @@ public final class AuthorizationSerializerImpl implements AuthorizationSerialize
     }
 
     @Override
-    public void serializeAll(HashMap<Integer, AuthorizedUser> authorizedUserCache) {
-        authorizedUserCache.forEach((integer, user) -> serialize(user));
+    public void serializeAll(HashMap<Integer, AuthorizedUser> authorizedUserCache, Path path) {
+        authorizedUserCache.forEach((integer, user) -> serialize(user, path));
     }
 
     @Override
-    public void serialize(AuthorizedUser authorizedUser) {
+    public void serialize(AuthorizedUser authorizedUser, Path path) {
         String line = authorizedUser.name() + "," + authorizedUser.userId() + ',' + authorizedUser.password();
         try {
-            Path path = Path.of("src/main/resources/AuthorizedUsers");
             Files.write(path, line.getBytes());
         }
         catch (IOException e){

@@ -6,17 +6,24 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class ProductSerializerImpl implements ProductSerializer{
 
-    public List<Product> parseAll() throws IOException {
-        List<Product> productList = new ArrayList<>();
+    @Override
+    public HashMap<Integer,Product> parseAll() throws IOException {
+        HashMap<Integer,Product> productList = new HashMap<>();
         List<String> lines = Files.readAllLines(Path.of("src/main/resources/Products.txt"));
-        lines.forEach(line -> productList.add(parse(line)));
+        lines.forEach(line -> {
+            Product product = parse(line);
+            productList.put(product.id(), product);
+        });
         return productList;
     }
 
+    @Override
     public void serializeAll(List<Product> productList){
         productList.forEach(this::serialize);
     }

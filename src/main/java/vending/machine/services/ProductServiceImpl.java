@@ -1,6 +1,7 @@
 package vending.machine.services;
 
 import vending.machine.data.Product;
+import vending.machine.data.ProductWithChange;
 import vending.machine.exeptions.NotEnoughMoneyException;
 import vending.machine.exeptions.ProductNotFoundException;
 import vending.machine.exeptions.ZeroStockException;
@@ -9,6 +10,7 @@ import vending.machine.repositories.ProductRepository;
 import vending.machine.repositories.ProductRepositoryImpl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public final class ProductServiceImpl implements ProductService{
@@ -33,7 +35,7 @@ public final class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Map<Product, Float> retrieveProduct(int productId, float money) throws NotEnoughMoneyException {
+    public ProductWithChange retrieveProduct(int productId, float money) throws NotEnoughMoneyException {
         Product product = productRepository.findProductBy(productId);
         if (money < product.price()) throw new NotEnoughMoneyException();
 
@@ -43,6 +45,6 @@ public final class ProductServiceImpl implements ProductService{
         float change = money - product.price();
         analyticRepository.increaseTotalEarningsBy(product.price());
 
-        return Map.of(product, change);
+        return new ProductWithChange(product, change);
     }
 }

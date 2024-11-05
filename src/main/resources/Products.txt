@@ -1,0 +1,4 @@
+01,Water,0.5,10
+02,Chocolate,2,4
+03,Banana,1.2,7
+04,Smoothie,7,2

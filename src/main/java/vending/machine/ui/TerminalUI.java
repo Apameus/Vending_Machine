@@ -27,7 +27,9 @@ public final class TerminalUI {
     public void start(){
         while (true){
             console.printf(productService.listProducts().toString());
-            int productId = Integer.parseInt(console.readLine("EXIT or Product Id: "));
+            String input = console.readLine("EXIT or Product Id: ");
+            if (input.equals("EXIT")) break;
+            int productId = Integer.parseInt(input);
             try {
                 productService.verifyProductAvailability(productId);
             } catch (ProductNotFoundException e) {

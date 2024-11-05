@@ -30,7 +30,6 @@ public final class TerminalUI {
             if (authorizationCheck(input)) break;
             buyProduct(input);
         }
-
     }
 
     private boolean authorizationCheck(String input) {

@@ -1,10 +1,7 @@
 package vending.machine;
 
 import vending.machine.repositories.*;
-import vending.machine.serializers.AuthorizationSerializer;
-import vending.machine.serializers.AuthorizationSerializerImpl;
-import vending.machine.serializers.ProductSerializer;
-import vending.machine.serializers.ProductSerializerImpl;
+import vending.machine.serializers.*;
 import vending.machine.services.*;
 import vending.machine.ui.TerminalUI;
 
@@ -14,10 +11,11 @@ public final class App {
 
     public static void main(String[] args) throws IOException {
         ProductSerializer productSerializer = new ProductSerializerImpl();
+        AnalyticSerializer analyticSerializer = new AnalyticSerializerImpl();
         AuthorizationSerializer authorizationSerializer = new AuthorizationSerializerImpl();
 
         ProductRepository productRepository = new ProductRepositoryImpl(productSerializer.parseAll());
-        AnalyticRepository analyticRepository = new AnalyticRepositoryImpl();
+        AnalyticRepository analyticRepository = new AnalyticRepositoryImpl(analyticSerializer.parseAllSales(), analyticSerializer.parseAllUserMovement());
         AuthorizationRepository authorizationRepository = new AuthorizationRepositoryImpl(authorizationSerializer.parseAll());
 
         ProductService productService = new ProductServiceImpl(productRepository, analyticRepository);

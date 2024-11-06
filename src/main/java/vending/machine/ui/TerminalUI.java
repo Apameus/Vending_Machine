@@ -1,9 +1,8 @@
 package vending.machine.ui;
+import vending.machine.data.Command;
+import vending.machine.data.Product;
 import vending.machine.data.ProductWithChange;
-import vending.machine.exeptions.AuthorizationFailedException;
-import vending.machine.exeptions.NotEnoughMoneyException;
-import vending.machine.exeptions.ProductNotFoundException;
-import vending.machine.exeptions.ZeroStockException;
+import vending.machine.exeptions.*;
 import vending.machine.services.AnalyticService;
 import vending.machine.services.AuthorizationService;
 import vending.machine.services.ProductService;
@@ -32,17 +31,63 @@ public final class TerminalUI {
         }
     }
 
-    private boolean authorizationCheck(String input) {
-        if (input.length() == 8) {
+    private boolean authorizationCheck(String userId) {
+        if (userId.length() == 8) {
             int password = Integer.parseInt(console.readLine("Enter Password: "));
             try {
-                authorizationService.authorizeUser(Integer.parseInt(input), password);
+                authorizationService.authorizeUser(Integer.parseInt(userId), password);
+                console.printf("%n WELCOME %n");
+                Integer cmdId = Integer.parseInt(console.readLine("Give command ID: "));
+                commandAction(cmdId, Integer.valueOf(userId));
             } catch (AuthorizationFailedException e) {
                 console.printf("Authorization Failed!");
             }
             return true;
         }
         return false;
+    }
+
+    private void commandAction(Integer cmdId, Integer userId) {
+        //TODO: CHECK if input cmdID is valid
+        while (cmdId!=00){
+            try {
+                Command command = Command.getById(cmdId);
+                switch (command){
+                    int productId = Integer.parseInt(console.readLine("Give product id: "));
+                    case UPDATE_QUANTITY -> {
+                        Integer quantity = Integer.valueOf(console.readLine("Quantity: "));
+                        productService.updateQuantity(productId, quantity);
+                    }
+                    case UPDATE_PRICE -> {
+                        Float price = Float.valueOf(console.readLine("Price: "));
+                        productService.updatePrice(productId, price);
+                    }
+                    case UPDATE_ID -> {
+                        Integer newId = Integer.valueOf(console.readLine("ID: "));
+                        productService.updateId(productId, newId);
+                    }
+                    case UPDATE_NAME -> {
+                        String name = console.readLine("Name: ");
+                        productService.updateName(productId, name);
+                    }
+                    case ADD_PRODUCT -> {
+                        Integer newId = Integer.valueOf(console.readLine("ID: "));
+                        String name = console.readLine("Name: ");
+                        Float price = Float.valueOf(console.readLine("Price: "));
+                        Integer quantity = Integer.valueOf(console.readLine("Quantity: "));
+                        Product product = new Product(newId, name, price, quantity);
+                        productService.addProduct(product);
+                    }
+                    case REMOVE_PRODUCT -> productService.removeProduct(productId);
+                    case TOP_THREE_MOST_SELLING_PRODUCTS -> productService.topThreeMostSellingProducts();
+                    case TOTAL_EARNINGS -> productService.totalEarnings();
+                    case RETRIEVE_MONEY -> productService.retrieveMoney(userId);
+                }
+                cmdId = Integer.parseInt(console.readLine("Give command ID: "));
+            } catch (CommandDoesntExistException e) {
+                console.printf("Command ID doesn't exist");
+            }
+        }
     }
 
     private void buyProduct(String input) {

@@ -242,8 +242,8 @@ sequenceDiagram
     participant PS as ProductService
     participant PR as ProductRepo
     alt cmd == 10
-        UI ->> PS: addProduct( id )
-        PS ->> PR: addProduct( id )
+        UI ->> PS: addProduct( Product )
+        PS ->> PR: addProduct( Product )
     end
 
 ```
@@ -265,14 +265,14 @@ end
 ```mermaid
 sequenceDiagram
     participant UI
-    participant PS as ProductService
+    participant AS as AnalyticService
     participant AR as AnalyticRepo
 
     alt cmd == 30
-            UI ->> PS: topThreeProducts()
-            PS ->> AR: topThreeProducts()
-            AR ->> PS: list[product, sales]
-            PS ->> UI: list[product, sales]
+            UI ->> AS: topThreeProducts()
+            AS ->> AR: topThreeProducts()
+            AR ->> AS: list[product, sales]
+            AS ->> UI: list[product, sales]
     end
 ```
 
@@ -280,14 +280,14 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
 participant UI
-participant PS as ProductService
+participant AS as AnalyticService
 participant AR as AnalyticRepo
 
 alt cmd == 40
-    UI ->> PS: totalEarnings()
-    PS ->> AR: totalEarnings()
-    AR ->> PS: total Earnings
-    PS ->> UI: total Earnings
+    UI ->> AS: totalEarnings()
+    AS ->> AR: totalEarnings()
+    AR ->> AS: total Earnings
+    AS ->> UI: total Earnings
 end
 ```
 
@@ -295,19 +295,19 @@ end
 ```mermaid
 sequenceDiagram
 participant UI
-participant PS as ProductService
+participant AS as AnalyticService
 participant AR as AnalyticRepo
 
 
 alt cmd == 50
-UI ->> PS: retrieveAllEarnings( userId )
-PS ->> AR: retrieveAllEarnings( userId )
-    PS ->> AR: trackMoneyMovement( userId, availableEarnings )
-    AR ->> PS: availableEarnings
+UI ->> AS: retrieveAllEarnings( userId )
+AS ->> AR: retrieveAllEarnings( userId )
+    AS ->> AR: trackMoneyMovement( userId, availableEarnings )
+    AR ->> AS: availableEarnings
         alt availableEarning == 0
-        PS ->> UI: zeroAvailableEarningsException
+        AS ->> UI: zeroAvailableEarningsException
         end
-    PS ->> UI: availableEarnings
+    AS ->> UI: availableEarnings
 AR ->> AR: availableEarnings = 0
 end
 ```

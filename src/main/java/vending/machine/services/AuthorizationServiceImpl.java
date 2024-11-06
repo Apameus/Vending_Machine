@@ -14,6 +14,6 @@ public final class AuthorizationServiceImpl implements AuthorizationService{
     @Override
     public void authorizeUser(int userId, int password) throws AuthorizationFailedException {
         AuthorizedUser user = authorizationRepository.findUserBy(userId);
-        if (user == null) throw new AuthorizationFailedException();
+        if (user == null || user.password() != password) throw new AuthorizationFailedException();
     }
 }

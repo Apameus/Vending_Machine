@@ -14,7 +14,7 @@ public final class AnalyticSerializerImpl implements AnalyticSerializer{
         return Float.valueOf(line);
     }
 
-    @Override //todo: add path as parameter
+    @Override //todo: remove path from parameter ?
     public void serializeTotalEarnings(Float totalEarnings, Path path) throws IOException {
         Files.write(path,totalEarnings.toString().getBytes());
     }

@@ -23,7 +23,7 @@ public final class AuthorizationSerializerImpl implements AuthorizationSerialize
     @Override
     public AuthorizedUser parse(String line) {
         String[] values = line.split(",");
-        return new AuthorizedUser(values[0], Integer.parseInt(values[1]), values[2]);
+        return new AuthorizedUser(values[0], Integer.parseInt(values[1]), Integer.parseInt(values[2]));
     }
 
 //    @Override

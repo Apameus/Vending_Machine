@@ -26,19 +26,4 @@ public final class AuthorizationSerializerImpl implements AuthorizationSerialize
         return new AuthorizedUser(values[0], Integer.parseInt(values[1]), Integer.parseInt(values[2]));
     }
 
-//    @Override
-//    public void serializeAll(HashMap<Integer, AuthorizedUser> authorizedUserCache, Path path) {
-//        authorizedUserCache.forEach((integer, user) -> serialize(user, path));
-//    }
-//
-//    @Override
-//    public void serialize(AuthorizedUser authorizedUser, Path path) {
-//        String line = authorizedUser.name() + "," + authorizedUser.userId() + ',' + authorizedUser.password();
-//        try {
-//            Files.write(path, line.getBytes());
-//        }
-//        catch (IOException e){
-//            e.printStackTrace();
-//        }
-//    }
 }

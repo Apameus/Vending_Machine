@@ -270,8 +270,9 @@ sequenceDiagram
 
     alt cmd == 30
             UI ->> AS: topThreeProducts()
-            AS ->> AR: topThreeProducts()
+            AS ->> AR: getAllSales()
             AR ->> AS: list[product, sales]
+            AS ->> AS: shortTopThree
             AS ->> UI: list[product, sales]
     end
 ```
@@ -300,8 +301,8 @@ participant AR as AnalyticRepo
 
 
 alt cmd == 50
-UI ->> AS: retrieveAllEarnings( userId )
-AS ->> AR: retrieveAllEarnings( userId )
+UI ->> AS: retrieveAvailableEarnings( userId )
+AS ->> AR: retrieveAvailableEarnings( userId )
     AS ->> AR: trackMoneyMovement( userId, availableEarnings )
     AR ->> AS: availableEarnings
         alt availableEarning == 0

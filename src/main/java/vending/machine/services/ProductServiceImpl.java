@@ -2,6 +2,7 @@ package vending.machine.services;
 
 import vending.machine.data.Product;
 import vending.machine.data.ProductWithChange;
+import vending.machine.exeptions.MachineOverloadedException;
 import vending.machine.exeptions.NotEnoughMoneyException;
 import vending.machine.exeptions.ProductNotFoundException;
 import vending.machine.exeptions.ZeroStockException;
@@ -46,5 +47,44 @@ public final class ProductServiceImpl implements ProductService{
         analyticRepository.increaseTotalEarningsBy(product.price());
 
         return new ProductWithChange(product, change);
+    }
+
+    @Override
+    public void addStock(int productId, Integer quantity) throws ProductNotFoundException, MachineOverloadedException {
+        Product product = productRepository.findProductBy(productId);
+        if (product == null) throw new ProductNotFoundException();
+        else if (product.quantity() + quantity > 10) throw new MachineOverloadedException();
+        productRepository.updateQuantity(productId, product.quantity() + quantity);
+    }
+
+    @Override
+    public void updatePrice(int productId, Float price) throws ProductNotFoundException {
+        Product product = productRepository.findProductBy(productId);
+        if (product == null) throw new ProductNotFoundException();
+        productRepository.updatePrice(productId, price);
+    }
+
+    @Override
+    public void updateId(int productId, Integer newId) throws ProductNotFoundException {
+        Product product = productRepository.findProductBy(productId);
+        if (product == null) throw new ProductNotFoundException();
+        productRepository.updateId(productId, newId);
+    }
+
+    @Override
+    public void updateName(int productId, String name) throws ProductNotFoundException {
+        Product product = productRepository.findProductBy(productId);
+        if (product == null) throw new ProductNotFoundException();
+        productRepository.updateName(productId, name);
+    }
+
+    @Override
+    public void addProduct(Product product) {
+        productRepository.addProduct(product);
+    }
+
+    @Override
+    public void removeProduct(int productId) {
+        productRepository.removeProduct(productId);
     }
 }

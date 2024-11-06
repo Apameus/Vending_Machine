@@ -41,7 +41,43 @@ public final class ProductRepositoryImpl implements ProductRepository{
         Product product = productCache.get(productId);
         Product productWithDecreasedQuantity = productCache.get(productId).updateQuantity(product.quantity() - 1);
         productCache.put(productId, productWithDecreasedQuantity);
-        serializeAll();
+        serializeAllProducts();
+    }
+
+    @Override
+    public void updateQuantity(int productId, Integer quantity) {
+        productCache.put(productId, productCache.get(productId).updateQuantity(quantity));
+        serializeAllProducts();
+    }
+
+    @Override
+    public void updatePrice(int productId, Float price) {
+        productCache.put(productId, productCache.get(productId).updatePrice(price));
+        serializeAllProducts();
+    }
+
+    @Override
+    public void updateId(int productId, Integer newId) {
+        productCache.put(productId, productCache.get(productId).updateId(newId));
+        serializeAllProducts();
+    }
+
+    @Override
+    public void updateName(int productId, String name) {
+        productCache.put(productId, productCache.get(productId).updateName(name));
+        serializeAllProducts();
+    }
+
+    @Override
+    public void addProduct(Product product) {
+        productCache.put(product.id(), product);
+        serializeAllProducts();
+    }
+
+    @Override
+    public void removeProduct(int productId) {
+        productCache.remove(productId);
+        serializeAllProducts();
     }
 
 
@@ -58,7 +94,7 @@ public final class ProductRepositoryImpl implements ProductRepository{
 
 
     //TODO: serializeAll
-    public void serializeAll(){
+    public void serializeAllProducts(){
         List<String> lines = new ArrayList<>();
         productCache.forEach((integer, product) -> lines.add(serializer.serialize(product)));
         try {

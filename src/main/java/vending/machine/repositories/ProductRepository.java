@@ -10,4 +10,16 @@ public interface ProductRepository {
     Product findProductBy(int productId);
 
     void decreaseQuantity(int productId);
+
+    void updateQuantity(int productId, Integer quantity);
+
+    void updatePrice(int productId, Float price);
+
+    void updateId(int product, Integer newId);
+
+    void updateName(int productId, String name);
+
+    void addProduct(Product product);
+
+    void removeProduct(int productId);
 }

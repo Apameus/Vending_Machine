@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public enum Command {
     EXIT(00),
-    UPDATE_QUANTITY(01),
+    ADD_STOCK(01),
     UPDATE_PRICE(02),
     UPDATE_ID(03),
     UPDATE_NAME(04),
@@ -33,5 +33,9 @@ public enum Command {
         Command command = COMMAND_MAP.get(ID);
         if (command == null) throw new CommandDoesntExistException();
         return command;
+    }
+
+    public int id() {
+        return ID;
     }
 }

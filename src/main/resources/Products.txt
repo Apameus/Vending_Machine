@@ -1,4 +1,4 @@
-1,Water,0.5,3
-2,Chocolate,2.0,4
-3,Banana,1.2,7
-4,Smoothie,7.0,1
+1,Water,0.5,8
+2,Chocolate,2.0,10
+3,Banana,1.5,10
+4,Smoothie,7.0,10

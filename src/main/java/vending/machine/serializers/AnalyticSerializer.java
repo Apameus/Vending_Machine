@@ -17,5 +17,5 @@ public interface AnalyticSerializer {
 
 
     UserMovement parseUserMovement(String line);
-    void serializeUserMovement(UserMovement userMovement, Path path) throws IOException;
+    String serializeUserMovement(UserMovement userMovement) throws IOException;
 }

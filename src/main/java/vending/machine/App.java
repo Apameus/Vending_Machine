@@ -20,7 +20,7 @@ public final class App {
         AuthorizationRepository authorizationRepository = new AuthorizationRepositoryImpl(Path.of("src/main/resources/AuthorizedUsers"), authorizationSerializer);
 
         ProductService productService = new ProductServiceImpl(productRepository, analyticRepository);
-        AnalyticService analyticService = new AnalyticServiceImpl(); //EMPTY
+        AnalyticService analyticService = new AnalyticServiceImpl(analyticRepository); //EMPTY
         AuthorizationService authorizationService = new AuthorizationServiceImpl(authorizationRepository);
 
         TerminalUI terminalUI = new TerminalUI(System.console(), productService, analyticService, authorizationService);

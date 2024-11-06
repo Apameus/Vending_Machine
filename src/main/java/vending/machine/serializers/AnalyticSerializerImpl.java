@@ -42,12 +42,7 @@ public final class AnalyticSerializerImpl implements AnalyticSerializer{
 
 
     @Override
-    public void serializeUserMovement(UserMovement userMovement, Path path)   {
-        String line = userMovement.userId() + "," + userMovement.receivedMoney();
-        try {
-            Files.write((path),line.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public String serializeUserMovement(UserMovement userMovement)   {
+        return userMovement.userId() + "," + userMovement.receivedMoney();
     }
 }

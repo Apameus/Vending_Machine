@@ -37,6 +37,7 @@ public final class TerminalUI {
             try {
                 authorizationService.authorizeUser(Integer.parseInt(userId), password);
                 console.printf("%n WELCOME %n");
+                showCommands();
                 Integer cmdId = Integer.parseInt(console.readLine("Give command ID: "));
                 commandAction(cmdId, Integer.valueOf(userId));
             } catch (AuthorizationFailedException e) {
@@ -47,26 +48,35 @@ public final class TerminalUI {
         return false;
     }
 
+    private void showCommands() {
+        for (Command command : Command.values()) {
+            console.printf("ID: " + command.id() + " - " + command.name() + "%n");
+        }
+    }
+
     private void commandAction(Integer cmdId, Integer userId) {
         //TODO: CHECK if input cmdID is valid
         while (cmdId!=00){
             try {
                 Command command = Command.getById(cmdId);
                 switch (command){
-                    int productId = Integer.parseInt(console.readLine("Give product id: "));
-                    case UPDATE_QUANTITY -> {
+                    case ADD_STOCK -> {
+                        int productId = Integer.parseInt(console.readLine("Give product id: "));
                         Integer quantity = Integer.valueOf(console.readLine("Quantity: "));
-                        productService.updateQuantity(productId, quantity);
+                        productService.addStock(productId, quantity);
                     }
                     case UPDATE_PRICE -> {
+                        int productId = Integer.parseInt(console.readLine("Give product id: "));
                         Float price = Float.valueOf(console.readLine("Price: "));
                         productService.updatePrice(productId, price);
                     }
                     case UPDATE_ID -> {
+                        int productId = Integer.parseInt(console.readLine("Give product id: "));
                         Integer newId = Integer.valueOf(console.readLine("ID: "));
                         productService.updateId(productId, newId);
                     }
                     case UPDATE_NAME -> {
+                        int productId = Integer.parseInt(console.readLine("Give product id: "));
                         String name = console.readLine("Name: ");
                         productService.updateName(productId, name);
                     }
@@ -78,14 +88,21 @@ public final class TerminalUI {
                         Product product = new Product(newId, name, price, quantity);
                         productService.addProduct(product);
                     }
-                    case REMOVE_PRODUCT -> productService.removeProduct(productId);
-                    case TOP_THREE_MOST_SELLING_PRODUCTS -> productService.topThreeMostSellingProducts();
-                    case TOTAL_EARNINGS -> productService.totalEarnings();
-                    case RETRIEVE_MONEY -> productService.retrieveMoney(userId);
+                    case REMOVE_PRODUCT -> {
+                        int productId = Integer.parseInt(console.readLine("Give product id: "));
+                        productService.removeProduct(productId);
+                    }
+                    case TOP_THREE_MOST_SELLING_PRODUCTS -> {console.printf(analyticService.topThreeMostSellingProducts().toString());}
+                    case TOTAL_EARNINGS -> console.printf(analyticService.totalEarnings().toString());
+                    case RETRIEVE_MONEY -> analyticService.retrieveMoney(userId);
                 }
                 cmdId = Integer.parseInt(console.readLine("Give command ID: "));
             } catch (CommandDoesntExistException e) {
                 console.printf("Command ID doesn't exist");
+            } catch (MachineOverloadedException e) {
+                console.printf("Machine can't have more than 10 products");
+            } catch (ProductNotFoundException e) {
+                console.printf("Product doesn't exist");
             }
         }
     }

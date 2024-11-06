@@ -11,8 +11,9 @@ import java.util.List;
 
 public final class AnalyticRepositoryImpl implements AnalyticRepository{
     private HashMap<Integer,Sale> salesCache;
+    private HashMap<Integer,UserMovement> userMovements;
     private Float totalEarnings;
-    private HashMap<Integer,UserMovement> userMovements; //TODO: is this the right place?
+    private Float availableEarnings;//TODO calculate availableEarnings
 
     private AnalyticSerializer serializer;
     Path salesPath;
@@ -48,8 +49,30 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
         serializeAllSales();
     }
 
+    @Override
+    public List<Sale> getAllSales() {
+        return List.of();
+    }
 
-    //TODO parseAll
+    @Override
+    public Float totalEarnings() {
+        return totalEarnings;
+    }
+
+    @Override
+    public Float retrieveAvailableEarnings() {
+        var previousAvailableEarnings = availableEarnings;
+        availableEarnings = 0F;
+        return previousAvailableEarnings;
+    }
+
+    @Override
+    public void trackMoneyMovement(Integer userId, Float availableEarnings) {
+        userMovements.put(userId, new UserMovement(userId, availableEarnings)); //TODO
+        serializeAllUserMovements();
+    }
+
+
     //sales
     public HashMap<Integer,Sale> parseAllSales() throws IOException {
         HashMap<Integer,Sale> sales = new HashMap<>();
@@ -62,7 +85,6 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
     }
 
 
-    //TODO serializeAll
     //sales
     public void serializeAllSales() {
         List<String> lines = new ArrayList<>();
@@ -74,6 +96,17 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void serializeAllUserMovements(){
+        List<String> lines = new ArrayList<>();
+        userMovements.forEach((integer, userMovement) -> {
+            try {
+                lines.add(serializer.serializeUserMovement(userMovement));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }

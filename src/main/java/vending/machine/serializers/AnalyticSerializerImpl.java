@@ -1,4 +1,5 @@
 package vending.machine.serializers;
+import vending.machine.data.Earnings;
 import vending.machine.data.Sale;
 import vending.machine.data.UserMovement;
 import java.io.IOException;
@@ -9,15 +10,16 @@ public final class AnalyticSerializerImpl implements AnalyticSerializer{
 
 
     @Override
-    public Float parseTotalEarnings(Path path) throws IOException {
-        String line = Files.readAllLines(Path.of("src/main/resources/TotalEarnings")).getFirst();
-        return Float.valueOf(line);
+    public Earnings parseEarnings(String line)  {
+        String[] values = line.split(",");
+        return new Earnings(Float.parseFloat(values[0]), Float.parseFloat(values[1]));
     }
 
-    @Override //todo: remove path from parameter ?
-    public void serializeTotalEarnings(Float totalEarnings, Path path) throws IOException {
-        Files.write(path,totalEarnings.toString().getBytes());
+    @Override
+    public String serializeEarnings(Earnings earnings) {
+        return earnings.totalEarnings() + "," + earnings.availableEarnings();
     }
+
 
 
     @Override

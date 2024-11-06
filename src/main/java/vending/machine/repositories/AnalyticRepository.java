@@ -5,7 +5,7 @@ import vending.machine.data.Sale;
 import java.util.List;
 
 public interface AnalyticRepository {
-    void increaseTotalEarningsBy(float price);
+    void increaseEarningsBy(float price);
 
     void increaseSales(int productId);
 
@@ -16,4 +16,6 @@ public interface AnalyticRepository {
     Float retrieveAvailableEarnings();
 
     void trackMoneyMovement(Integer userId, Float availableEarnings);
+
+    void refreshAvailableEarnings();
 }

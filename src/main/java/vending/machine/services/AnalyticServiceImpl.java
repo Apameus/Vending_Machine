@@ -32,6 +32,7 @@ public final class AnalyticServiceImpl implements AnalyticService{
     public Float retrieveMoney(Integer userId) {
         Float availableEarnings = analyticRepository.retrieveAvailableEarnings();
         analyticRepository.trackMoneyMovement(userId, availableEarnings);
+        analyticRepository.refreshAvailableEarnings();
         return availableEarnings;
     }
 

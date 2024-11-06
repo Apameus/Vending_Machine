@@ -26,7 +26,7 @@ public final class TerminalUI {
             showProducts();
             String input = console.readLine("EXIT or Product Id: ");
             if (input.equals("EXIT")) break;
-            if (authorizationCheck(input)) break;
+            if (authorizationCheck(input)) continue;
             buyProduct(input);
         }
     }

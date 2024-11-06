@@ -8,11 +8,8 @@ import vending.machine.exeptions.ProductNotFoundException;
 import vending.machine.exeptions.ZeroStockException;
 import vending.machine.repositories.AnalyticRepository;
 import vending.machine.repositories.ProductRepository;
-import vending.machine.repositories.ProductRepositoryImpl;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class ProductServiceImpl implements ProductService{
     private ProductRepository productRepository;
@@ -42,10 +39,9 @@ public final class ProductServiceImpl implements ProductService{
 
         productRepository.decreaseQuantity(productId);
         analyticRepository.increaseSales(productId);
+        analyticRepository.increaseEarningsBy(product.price());
 
         float change = money - product.price();
-        analyticRepository.increaseTotalEarningsBy(product.price());
-
         return new ProductWithChange(product, change);
     }
 

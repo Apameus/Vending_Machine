@@ -1,4 +1,5 @@
 package vending.machine.repositories;
+import vending.machine.data.Earnings;
 import vending.machine.data.Sale;
 import vending.machine.data.UserMovement;
 import vending.machine.serializers.AnalyticSerializer;
@@ -12,34 +13,32 @@ import java.util.List;
 public final class AnalyticRepositoryImpl implements AnalyticRepository{
     private HashMap<Integer,Sale> salesCache;
     private HashMap<Integer,UserMovement> userMovements;
-    private Float totalEarnings;
-    private Float availableEarnings;//TODO calculate availableEarnings
+    private Earnings earnings;
 
     private AnalyticSerializer serializer;
-    Path salesPath;
-    Path totalEarningsPath;
+    private Path salesPath;
+    private Path earningsPath;
+    private Path userMovementsPath;
 
 
-    public AnalyticRepositoryImpl(Path salesPath, Path totalEarningsPath, AnalyticSerializer serializer) {
+    public AnalyticRepositoryImpl(Path salesPath, Path earningsPath, Path userMovementsPath, AnalyticSerializer serializer) {
         this.serializer = serializer;
         this.salesPath = salesPath;
-        this.totalEarningsPath = totalEarningsPath;
+        this.earningsPath = earningsPath;
+        this.userMovementsPath = userMovementsPath;
         try {
             salesCache = parseAllSales();
-            totalEarnings = serializer.parseTotalEarnings(totalEarningsPath);
+            earnings = parseEarnings();
+            userMovements = parseUserAllMovements();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void increaseTotalEarningsBy(float price) {
-        totalEarnings += price;
-        try {
-            serializer.serializeTotalEarnings(totalEarnings, totalEarningsPath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void increaseEarningsBy(float price) {
+       earnings = earnings.increaseEarningsBy(price);
+       serializeEarnings();
     }
 
     @Override
@@ -51,29 +50,43 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
 
     @Override
     public List<Sale> getAllSales() {
-        return List.of();
+        return new ArrayList<>(salesCache.values()); //todo refactor?
     }
 
     @Override
     public Float totalEarnings() {
-        return totalEarnings;
+        return earnings.totalEarnings();
     }
 
     @Override
     public Float retrieveAvailableEarnings() {
-        var previousAvailableEarnings = availableEarnings;
-        availableEarnings = 0F;
-        return previousAvailableEarnings;
+        return earnings.availableEarnings();
+    }
+
+    public void refreshAvailableEarnings(){
+        earnings = earnings.updateAvailableEarnings(0);
+        serializeEarnings();
     }
 
     @Override
     public void trackMoneyMovement(Integer userId, Float availableEarnings) {
-        userMovements.put(userId, new UserMovement(userId, availableEarnings)); //TODO
+        float alreadyReceivedMoney = userMovements.get(userId).receivedMoney();
+        userMovements.put(userId, new UserMovement(userId, alreadyReceivedMoney + availableEarnings));
         serializeAllUserMovements();
     }
 
 
     //sales
+    private HashMap<Integer,UserMovement> parseUserAllMovements() throws IOException {
+        HashMap<Integer,UserMovement> moneyMovements = new HashMap<>();
+        List<String> lines = Files.readAllLines(userMovementsPath);
+        lines.forEach(line -> {
+            UserMovement userMovement = serializer.parseUserMovement(line);
+            moneyMovements.put(userMovement.userId(), userMovement);
+        });
+        return moneyMovements;
+    }
+
     public HashMap<Integer,Sale> parseAllSales() throws IOException {
         HashMap<Integer,Sale> sales = new HashMap<>();
         List<String> lines = Files.readAllLines(salesPath);
@@ -84,8 +97,25 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
         return sales;
     }
 
+    private void serializeEarnings(){
+        String line = serializer.serializeEarnings(earnings);
+        try {
+            Files.write(earningsPath, line.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    private Earnings parseEarnings(){
+        try {
+            String line = Files.readAllLines(earningsPath).getFirst();
+            return serializer.parseEarnings(line);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     //sales
+
     public void serializeAllSales() {
         List<String> lines = new ArrayList<>();
         salesCache.forEach((productId, sale) -> {
@@ -101,8 +131,9 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
     private void serializeAllUserMovements(){
         List<String> lines = new ArrayList<>();
         userMovements.forEach((integer, userMovement) -> {
+            lines.add(serializer.serializeUserMovement(userMovement));
             try {
-                lines.add(serializer.serializeUserMovement(userMovement));
+                Files.write(userMovementsPath, lines);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

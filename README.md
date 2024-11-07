@@ -89,9 +89,7 @@ end
 UI ->> UI: money
 
 
-UI ->> PS: retrieveProduct( id, money )
-PS ->> PR: findProductById( id )
-PR ->> PS: Product
+UI ->> PS: retrieveProduct( Product, money )
 alt money < Product price
     PS ->> UI: NotEnoughMoneyException
 end

@@ -1,0 +1,71 @@
+package vending.machine.service;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import vending.machine.data.Product;
+import vending.machine.exception.NotEnoughMoneyException;
+import vending.machine.exception.ProductNotFoundException;
+import vending.machine.exception.ZeroProductStockException;
+import vending.machine.repository.AnalyticsRepository;
+import vending.machine.repository.ProductRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+
+class ProductServiceImplUnitTests {
+
+    static final Product PRODUCT_WITH_ZERO_STOCK = new Product(50, "Mock", 50, 0);
+    private final Product PRODUCT_WITH_QUANTITY = new Product(15, "Apple", 50, 5);
+
+    ProductRepository productRepository = Mockito.mock(ProductRepository.class);
+    AnalyticsRepository analyticsRepository = Mockito.mock(AnalyticsRepository.class);
+    ProductServiceImpl productService = new ProductServiceImpl(productRepository, analyticsRepository);
+
+    @Test
+    @DisplayName("When findAvailableProduct productId does not exist, throw Exception")
+    void whenFindAvailableProductProductIdDoesNotExistThrowException() {
+        when(productRepository.findProductById(anyInt())).thenReturn(null);
+
+        assertThrows(ProductNotFoundException.class, () -> productService.findAvailableProduct(anyInt()));
+    }
+
+    @Test
+    @DisplayName("When findAvailableProduct has no available stock, throw Exception")
+    void whenFindAvailableProductHasNoAvailableStockThrowException() {
+        when(productRepository.findProductById(anyInt())).thenReturn(PRODUCT_WITH_ZERO_STOCK);
+
+        assertThrows(ZeroProductStockException.class, () -> productService.findAvailableProduct(anyInt()));
+    }
+
+    @Test
+    @DisplayName("When findAvailableProduct has a Product with stock, then return the Product")
+    void whenFindAvailableProductHasAProductWithStockThenReturnTheProduct() {
+        when(productRepository.findProductById(anyInt())).thenReturn(PRODUCT_WITH_QUANTITY);
+
+        var product = assertDoesNotThrow(() -> productService.findAvailableProduct(anyInt()));
+
+        assertThat(product).isSameAs(PRODUCT_WITH_QUANTITY);
+    }
+
+    @Test
+    @DisplayName("When retrieveProduct with not enough money, throw Exception")
+    void whenRetrieveProductWithNotEnoughMoneyThrowException() {
+        assertThrows(NotEnoughMoneyException.class,
+                () -> productService.retrieveProduct(PRODUCT_WITH_QUANTITY, PRODUCT_WITH_QUANTITY.price() - 1));
+    }
+
+    @Test
+    @DisplayName("RetrieveProduct with enough money")
+    void retrieveProductWithEnoughMoney() {
+        var change = assertDoesNotThrow(() -> productService.retrieveProduct(PRODUCT_WITH_QUANTITY, PRODUCT_WITH_QUANTITY.price() * 2));
+
+        verify(productRepository,  times(1))
+                .updateQuantity(PRODUCT_WITH_QUANTITY.id(), PRODUCT_WITH_QUANTITY.quantity() - 1);
+        verify(analyticsRepository, times(1))
+                .increaseSales(PRODUCT_WITH_QUANTITY.id());
+        assertThat(change).isEqualTo(PRODUCT_WITH_QUANTITY.price());
+    }
+}

@@ -16,7 +16,7 @@ public final class App {
         AuthorizationSerializer authorizationSerializer = new AuthorizationSerializerImpl();
 
         ProductRepository productRepository = new ProductRepositoryImpl(Path.of("src/main/resources/Products.txt"), productSerializer);
-        AnalyticRepository analyticRepository = new AnalyticRepositoryImpl(Path.of("src/main/resources/Sales"), Path.of("src/main/resources/TotalEarnings"), Path.of("src/main/resources/UserMovement"),analyticSerializer);
+        AnalyticRepository analyticRepository = new AnalyticRepositoryImpl(Path.of("src/main/resources/Sales"), Path.of("src/main/resources/Earnings"), Path.of("src/main/resources/UserMovement"),analyticSerializer);
         AuthorizationRepository authorizationRepository = new AuthorizationRepositoryImpl(Path.of("src/main/resources/AuthorizedUsers"), authorizationSerializer);
 
         ProductService productService = new ProductServiceImpl(productRepository, analyticRepository);

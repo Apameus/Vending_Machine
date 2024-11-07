@@ -3,7 +3,6 @@ package vending.machine.services;
 import vending.machine.data.Sale;
 import vending.machine.repositories.AnalyticRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,7 @@ public final class AnalyticServiceImpl implements AnalyticService{
     public Float retrieveMoney(Integer userId) {
         Float availableEarnings = analyticRepository.retrieveAvailableEarnings();
         analyticRepository.trackMoneyMovement(userId, availableEarnings);
-        analyticRepository.refreshAvailableEarnings();
+        analyticRepository.resetAvailableEarnings();
         return availableEarnings;
     }
 

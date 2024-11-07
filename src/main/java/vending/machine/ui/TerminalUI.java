@@ -9,10 +9,10 @@ import vending.machine.services.ProductService;
 import java.io.Console;
 
 public final class TerminalUI {
-    private Console console;
-    private ProductService productService;
-    private AnalyticService analyticService;
-    private AuthorizationService authorizationService;
+    private final Console console;
+    private final ProductService productService;
+    private final AnalyticService analyticService;
+    private final AuthorizationService authorizationService;
 
     public TerminalUI(Console console, ProductService productService, AnalyticService analyticService, AuthorizationService authorizationService) {
         this.productService = productService;
@@ -38,7 +38,7 @@ public final class TerminalUI {
                 authorizationService.authorizeUser(Integer.parseInt(userId), password);
                 console.printf("%n WELCOME %n");
                 showCommands();
-                Integer cmdId = Integer.parseInt(console.readLine("Give command ID: "));
+                Integer cmdId = Integer.parseInt(console.readLine("Give command ID: ")); //TODO: check
                 commandAction(cmdId, Integer.valueOf(userId));
             } catch (AuthorizationFailedException e) {
                 console.printf("Authorization Failed!");
@@ -92,7 +92,7 @@ public final class TerminalUI {
                         int productId = Integer.parseInt(console.readLine("Give product id: "));
                         productService.removeProduct(productId);
                     }
-                    case TOP_THREE_MOST_SELLING_PRODUCTS -> {console.printf(analyticService.topThreeMostSellingProducts().toString());}
+                    case TOP_THREE_MOST_SELLING_PRODUCTS -> console.printf(analyticService.topThreeMostSellingProducts().toString());
                     case TOTAL_EARNINGS -> console.printf(analyticService.totalEarnings().toString());
                     case RETRIEVE_MONEY -> analyticService.retrieveMoney(userId);
                 }
@@ -112,10 +112,10 @@ public final class TerminalUI {
         try {
             productService.verifyProductAvailability(productId);
         } catch (ProductNotFoundException e) {
-            console.printf("Product id doesn't exist!");
+            console.printf("Product id doesn't exist!%n");
             return;
         } catch (ZeroStockException e) {
-            console.printf("Product out of stock!");
+            console.printf("Product out of stock!%n");
             return;
         }
         float money = Float.parseFloat(console.readLine("Enter money: "));

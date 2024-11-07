@@ -11,14 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 
 public final class AnalyticRepositoryImpl implements AnalyticRepository{
-    private HashMap<Integer,Sale> salesCache;
-    private HashMap<Integer,UserMovement> userMovements;
+    private final HashMap<Integer,Sale> salesCache;
+    private final HashMap<Integer,UserMovement> userMovementsCache;
     private Earnings earnings;
 
-    private AnalyticSerializer serializer;
-    private Path salesPath;
-    private Path earningsPath;
-    private Path userMovementsPath;
+    private final AnalyticSerializer serializer;
+    private final Path salesPath;
+    private final Path earningsPath;
+    private final Path userMovementsPath;
 
 
     public AnalyticRepositoryImpl(Path salesPath, Path earningsPath, Path userMovementsPath, AnalyticSerializer serializer) {
@@ -29,7 +29,7 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
         try {
             salesCache = parseAllSales();
             earnings = parseEarnings();
-            userMovements = parseUserAllMovements();
+            userMovementsCache = parseUserAllMovements();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,15 +63,15 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
         return earnings.availableEarnings();
     }
 
-    public void refreshAvailableEarnings(){
+    public void resetAvailableEarnings(){
         earnings = earnings.updateAvailableEarnings(0);
         serializeEarnings();
     }
 
     @Override
     public void trackMoneyMovement(Integer userId, Float availableEarnings) {
-        float alreadyReceivedMoney = userMovements.get(userId).receivedMoney();
-        userMovements.put(userId, new UserMovement(userId, alreadyReceivedMoney + availableEarnings));
+        float alreadyReceivedMoney = userMovementsCache.get(userId).receivedMoney();
+        userMovementsCache.put(userId, new UserMovement(userId, alreadyReceivedMoney + availableEarnings));
         serializeAllUserMovements();
     }
 
@@ -115,12 +115,12 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
         }
     }
     //sales
-
     public void serializeAllSales() {
         List<String> lines = new ArrayList<>();
-        salesCache.forEach((productId, sale) -> {
-            lines.add(serializer.serializeSale(sale));
-        });
+//        salesCache.values().stream()
+//                .map(serializer::serializeSale)
+//                .forEach(lines::add);
+        salesCache.forEach((_, sale) -> lines.add(serializer.serializeSale(sale)));
         try {
             Files.write(salesPath, lines);
         } catch (IOException e) {
@@ -130,7 +130,7 @@ public final class AnalyticRepositoryImpl implements AnalyticRepository{
 
     private void serializeAllUserMovements(){
         List<String> lines = new ArrayList<>();
-        userMovements.forEach((integer, userMovement) -> {
+        userMovementsCache.forEach((_, userMovement) -> {
             lines.add(serializer.serializeUserMovement(userMovement));
             try {
                 Files.write(userMovementsPath, lines);

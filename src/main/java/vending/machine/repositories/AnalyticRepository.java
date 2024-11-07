@@ -17,5 +17,5 @@ public interface AnalyticRepository {
 
     void trackMoneyMovement(Integer userId, Float availableEarnings);
 
-    void refreshAvailableEarnings();
+    void resetAvailableEarnings();
 }

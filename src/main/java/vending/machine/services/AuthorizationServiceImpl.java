@@ -5,7 +5,7 @@ import vending.machine.exeptions.AuthorizationFailedException;
 import vending.machine.repositories.AuthorizationRepository;
 
 public final class AuthorizationServiceImpl implements AuthorizationService{
-    private AuthorizationRepository authorizationRepository;
+    private final AuthorizationRepository authorizationRepository;
 
     public AuthorizationServiceImpl(AuthorizationRepository authorizationRepository) {
         this.authorizationRepository = authorizationRepository;

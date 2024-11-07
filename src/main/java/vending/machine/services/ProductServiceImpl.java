@@ -37,7 +37,8 @@ public final class ProductServiceImpl implements ProductService{
         Product product = productRepository.findProductBy(productId);
         if (money < product.price()) throw new NotEnoughMoneyException();
 
-        productRepository.decreaseQuantity(productId);
+//        productRepository.decreaseQuantity(productId);
+        productRepository.updateQuantity(productId, product.quantity() - 1); //todo
         analyticRepository.increaseSales(productId);
         analyticRepository.increaseEarningsBy(product.price());
 

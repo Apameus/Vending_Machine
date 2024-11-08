@@ -1,17 +1,16 @@
 package vending.machine.repository;
 
 import vending.machine.data.Product;
-import vending.machine.serializers.ProductSerializer;
+import vending.machine.repository.dataSource.ProductDataSource;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public final class ProductRepositoryImpl implements ProductRepository {
     private final HashMap<Integer,Product> productCache; // CACHE
-    private final DataSource dataSource;
+    private final ProductDataSource dataSource;
 
-    public ProductRepositoryImpl(DataSource dataSource) {
+    public ProductRepositoryImpl(ProductDataSource dataSource) {
         this.dataSource = dataSource;
         productCache = new HashMap<>();
         dataSource.load().forEach(product -> productCache.put(product.id(), product));

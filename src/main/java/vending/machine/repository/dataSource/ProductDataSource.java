@@ -1,11 +1,10 @@
-package vending.machine.repository;
+package vending.machine.repository.dataSource;
 
 import vending.machine.data.Product;
 
 import java.util.Collection;
-import java.util.List;
 
-public interface DataSource {
+public interface ProductDataSource {
     Collection<Product> load();
 
     void save(Collection<Product> products);

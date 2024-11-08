@@ -38,6 +38,7 @@ public final class ProductServiceImpl implements ProductService {
             throw new NotEnoughMoneyException();
         productRepository.saveProduct(product.withQuantity(product.quantity() - 1));
         analyticsRepository.increaseSales(product.id());
+        analyticsRepository.increaseEarnings(product.price());
         return money - product.price();
     }
 

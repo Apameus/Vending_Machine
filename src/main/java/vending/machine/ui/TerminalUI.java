@@ -46,10 +46,10 @@ public final class TerminalUI {
             console.printf("Product not found!");
         } catch (ZeroProductStockException e) {
             console.printf("Product out of stock!");
-        }catch (NumberFormatException _){
-            console.printf("Wrong input!");
         } catch (NotEnoughMoneyException e) {
             console.printf("Not enough money!");
+        }catch (NumberFormatException _){
+            console.printf("Wrong input!");
         }
         //check_input
     }

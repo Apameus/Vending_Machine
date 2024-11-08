@@ -5,16 +5,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import vending.machine.data.Product;
+import vending.machine.repository.dataSource.ProductDataSource;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 class ProductRepositoryImplTest {
 
-    DataSource dataSource = Mockito.mock(DataSource.class);
+    ProductDataSource dataSource = Mockito.mock(ProductDataSource.class);
 
     public static final Product BANANA = new Product(1,"banana",5,10);
 

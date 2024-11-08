@@ -1,5 +1,8 @@
 package vending.machine.ui;
 
+import vending.machine.exception.NotEnoughMoneyException;
+import vending.machine.exception.ProductNotFoundException;
+import vending.machine.exception.ZeroProductStockException;
 import vending.machine.service.ProductService;
 import vending.machine.data.Product;
 
@@ -29,8 +32,26 @@ public final class TerminalUI {
                 console.printf("Invalid productId%n");
                 continue;
             }
-            retreiveProduct(productId);
+            retrieveProduct(productId);
         }
+    }
+
+    void retrieveProduct(int productId) {
+        try {
+            Product availableProduct = productService.findAvailableProduct(productId);
+            int money = Integer.parseInt(console.readLine("Money: "));
+            int change = productService.retrieveProduct(availableProduct, money);
+            console.printf(availableProduct.name() + ", Change: " + change);
+        } catch (ProductNotFoundException e) {
+            console.printf("Product not found!");
+        } catch (ZeroProductStockException e) {
+            console.printf("Product out of stock!");
+        }catch (NumberFormatException _){
+            console.printf("Wrong input!");
+        } catch (NotEnoughMoneyException e) {
+            console.printf("Not enough money!");
+        }
+        //check_input
     }
 
     private void printProducts(List<Product> products) {
@@ -47,10 +68,6 @@ public final class TerminalUI {
 
         System.out.println(builder);
         formatter.close();
-    }
-
-    void retreiveProduct(int productId) {
-
     }
 
 

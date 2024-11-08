@@ -21,7 +21,7 @@ public final class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> listProducts() {
-        return List.of();
+        return productRepository.findAllProducts();
     }
 
     @Override
@@ -36,7 +36,7 @@ public final class ProductServiceImpl implements ProductService {
     public int retrieveProduct(Product product, int money) throws NotEnoughMoneyException {
         if (product.price() > money)
             throw new NotEnoughMoneyException();
-        productRepository.updateQuantity(product.id(), product.quantity() - 1);
+        productRepository.saveProduct(product.withQuantity(product.quantity() - 1));
         analyticsRepository.increaseSales(product.id());
         return money - product.price();
     }

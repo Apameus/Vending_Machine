@@ -13,15 +13,15 @@ class AnalyticSerializerTest {
     final Sale VALID_SALE = new Sale(1,15);
 
     @Test
-    @DisplayName("Parse Product")
-    void parseProduct() {
+    @DisplayName("Parse Sale")
+    void parseSale() {
         Sale sale = serializer.parseSale(SALE_VALID_LINE);
         assertThat(sale).isEqualTo(VALID_SALE);
     }
 
     @Test
-    @DisplayName("Serialize Products")
-    void serializeProducts() {
+    @DisplayName("Serialize Sale")
+    void serializeSale() {
         String line = serializer.serializeSale(VALID_SALE);
         assertThat(line).isEqualTo(SALE_VALID_LINE);
     }

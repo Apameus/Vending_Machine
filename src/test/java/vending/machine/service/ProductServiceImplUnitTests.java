@@ -55,6 +55,13 @@ class ProductServiceImplUnitTests {
     }
 
     @Test
+    @DisplayName("When retrieveProduct with not enough money, throw Exception")
+    void whenRetrieveProductWithNotEnoughMoneyThrowException() {
+        assertThrows(NotEnoughMoneyException.class,
+                () -> productService.retrieveProduct(PRODUCT_WITH_QUANTITY, PRODUCT_WITH_QUANTITY.price() - 1));
+    }
+
+    @Test
     @DisplayName("When findAvailableProduct has a Product with stock, then return the Product")
     void whenFindAvailableProductHasAProductWithStockThenReturnTheProduct() {
         when(productRepository.findProductById(anyInt())).thenReturn(PRODUCT_WITH_QUANTITY);
@@ -62,13 +69,6 @@ class ProductServiceImplUnitTests {
         var product = assertDoesNotThrow(() -> productService.findAvailableProduct(anyInt()));
 
         assertThat(product).isSameAs(PRODUCT_WITH_QUANTITY);
-    }
-
-    @Test
-    @DisplayName("When retrieveProduct with not enough money, throw Exception")
-    void whenRetrieveProductWithNotEnoughMoneyThrowException() {
-        assertThrows(NotEnoughMoneyException.class,
-                () -> productService.retrieveProduct(PRODUCT_WITH_QUANTITY, PRODUCT_WITH_QUANTITY.price() - 1));
     }
 
     @Test

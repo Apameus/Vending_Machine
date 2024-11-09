@@ -3,6 +3,7 @@ package vending.machine.ui;
 import vending.machine.exception.NotEnoughMoneyException;
 import vending.machine.exception.ProductNotFoundException;
 import vending.machine.exception.ZeroProductStockException;
+import vending.machine.service.AuthorizationService;
 import vending.machine.service.ProductService;
 import vending.machine.data.Product;
 
@@ -14,10 +15,12 @@ public final class TerminalUI {
 
     private final Console console;
     private final ProductService productService;
+    private final AuthorizationService authorizationService;
 
-    public TerminalUI(ProductService productService) {
+    public TerminalUI(ProductService productService, AuthorizationService authorizationService) {
         this.console = System.console();
         this.productService = productService;
+        this.authorizationService = authorizationService;
     }
 
     public void start() {
@@ -25,6 +28,8 @@ public final class TerminalUI {
             printProducts(productService.listProducts());
             var action = console.readLine("EXIT or productId: ");
             if (action.equalsIgnoreCase("EXIT")) break;
+            if (action.length() == 8) authorizeUser(action);
+
             int productId;
             try {
                 productId = Integer.parseUnsignedInt(action);
@@ -36,12 +41,18 @@ public final class TerminalUI {
         }
     }
 
+    private void authorizeUser(String input) {
+        int id = Integer.parseInt(input);
+        int password = Integer.parseInt(console.readLine("Password: "));
+        authorizationService.authorizeUser(id, password);
+    }
+
     void retrieveProduct(int productId) {
         try {
             Product availableProduct = productService.findAvailableProduct(productId);
             int money = Integer.parseInt(console.readLine("Money: "));
             int change = productService.retrieveProduct(availableProduct, money);
-            console.printf(availableProduct.name() + ", Change: " + change);
+            console.printf(availableProduct.name() + ", Change: " + change + "%n");
         } catch (ProductNotFoundException e) {
             console.printf("Product not found!");
         } catch (ZeroProductStockException e) {

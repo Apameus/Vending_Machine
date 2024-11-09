@@ -4,8 +4,6 @@ import vending.machine.data.AnalyticData;
 import vending.machine.data.Earnings;
 import vending.machine.data.Sale;
 import vending.machine.repository.dataSource.AnalyticsDataSource;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

@@ -19,8 +19,8 @@ public final class App {
         AnalyticSerializer analyticSerializer = new AnalyticSerializer();
 
 
-        ProductDataSource productDataSource = new ProductDataSourceImpl(Path.of("src/main/java/vending/machine/resources/Products"), productSerializer);
-        AnalyticsDataSource analyticsDataSource = new AnalyticsDataSourceImpl(Path.of("src/main/java/vending/machine/resources/Sales"), analyticSerializer);
+        ProductDataSource productDataSource = new ProductDataSourceImpl(Path.of("src/main/resources/Products"), productSerializer);
+        AnalyticsDataSource analyticsDataSource = new AnalyticsDataSourceImpl(Path.of("src/main/resources/Analytics"), analyticSerializer);
 
         ProductRepository productRepository = new ProductRepositoryImpl(productDataSource);
         AnalyticsRepository analyticsRepository = new AnalyticsRepositoryImpl(analyticsDataSource);

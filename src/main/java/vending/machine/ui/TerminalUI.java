@@ -1,10 +1,8 @@
 package vending.machine.ui;
 
 import vending.machine.data.Command;
-import vending.machine.exception.AuthorizationFailedException;
-import vending.machine.exception.NotEnoughMoneyException;
-import vending.machine.exception.ProductNotFoundException;
-import vending.machine.exception.ZeroProductStockException;
+import vending.machine.exception.*;
+import vending.machine.service.AnalyticService;
 import vending.machine.service.AuthorizationService;
 import vending.machine.service.ProductService;
 import vending.machine.data.Product;
@@ -17,11 +15,13 @@ public final class TerminalUI {
 
     private final Console console;
     private final ProductService productService;
+    private final AnalyticService analyticService;
     private final AuthorizationService authorizationService;
 
-    public TerminalUI(ProductService productService, AuthorizationService authorizationService) {
+    public TerminalUI(ProductService productService, AnalyticService analyticService, AuthorizationService authorizationService) {
         this.console = System.console();
         this.productService = productService;
+        this.analyticService = analyticService;
         this.authorizationService = authorizationService;
     }
 
@@ -56,7 +56,56 @@ public final class TerminalUI {
 
     private void commandAction(Integer cmdId, int userID) {
         while (cmdId != 00){
-
+            try {
+                Command command = Command.getCommandById(cmdId);
+                switch (command) {
+                    case TOP_THREE_MOST_SELLING_PRODUCTS -> console.printf(analyticService.topThreeMostSellingProducts().toString());
+                    case TOTAL_EARNINGS -> console.printf(String.valueOf(analyticService.totalEarnings()));
+                    case RETRIEVE_AVAILABLE_EARNINGS -> console.printf(String.valueOf(analyticService.retrieveAvailableEarnings()));
+                }
+                switch (command){
+//                    int productID = Integer.parseInt(console.readLine("Product ID: "));
+                    case UPDATE_QUANTITY ->{
+                        int productID = Integer.parseInt(console.readLine("Product ID: "));
+                        int quantity = Integer.parseInt(console.readLine("Quantity: "));
+                        productService.addStock(productID, quantity);
+                    }
+                    case UPDATE_PRICE -> {
+                        int productID = Integer.parseInt(console.readLine("Product ID: "));
+                        int price = Integer.parseInt(console.readLine("Price: "));
+                        productService.updatePrice(productID, price);
+                    }
+                    case UPDATE_ID -> {
+                        int productID = Integer.parseInt(console.readLine("Product ID: "));
+                        int newID = Integer.parseInt(console.readLine("ID: "));
+                        productService.updateId(productID, newID);
+                    }
+                    case UPDATE_NAME -> {
+                        int productID = Integer.parseInt(console.readLine("Product ID: "));
+                        String name = console.readLine("Name");
+                        productService.updateName(productID, name);
+                    }
+                    case ADD_PRODUCT -> {
+                        int productID = Integer.parseInt(console.readLine("Product ID: "));
+                        String name = console.readLine("Name: ");
+                        int price = Integer.parseInt(console.readLine("Price: "));
+                        int quantity = Integer.parseInt(console.readLine("Quantity: "));
+                        Product product = new Product(productID, name, price, quantity);
+                        productService.addProduct(product);
+                    }
+                    case REMOVE_PRODUCT -> {
+                        int productID = Integer.parseInt(console.readLine("Product ID: "));
+                        productService.removeProduct(productID);
+                    }
+                }
+            } catch (CommandDoeNotExistException e) {
+                console.printf("Invalid command");
+            } catch (MachineOverloadException e) {
+                console.printf("Item can't be more than 10");
+            } catch (ProductNotFoundException e) {
+                console.printf("Product not found");
+            }
+            cmdId = Integer.parseInt(console.readLine("Give command ID: "));
         }
     }
 

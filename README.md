@@ -131,8 +131,8 @@ end
 | 10 | addProduct()                  |
 | 20 | removeProduct()               |
 | 30 | topThreeMostSellingProducts() |
-| 40 | totalIncome()                 |
-| 50 | retrieveMoney()               |
+| 40 | totalEarnings()               |
+| 50 | retrieveAvailableEarnings()   |
 
 
 #### Step 2.

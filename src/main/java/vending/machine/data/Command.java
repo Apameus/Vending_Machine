@@ -18,9 +18,15 @@ public enum Command {
     RETRIEVE_AVAILABLE_EARNINGS(50);
 
     final int ID;
-    private final HashMap<Integer,Command> COMMAND_MAP = new HashMap();
+    private static final HashMap<Integer,Command> COMMAND_MAP = new HashMap();
 
-    public Command getCommandById(int id) throws CommandDoeNotExistException {
+    static {
+        for (Command command : values()){
+            COMMAND_MAP.put(command.ID, command);
+        }
+    }
+
+    public static Command getCommandById(int id) throws CommandDoeNotExistException {
         Command command = COMMAND_MAP.get(id);
         if (command == null) throw new CommandDoeNotExistException();
         return command;
@@ -31,7 +37,5 @@ public enum Command {
     Command(int id) {
         this.ID = id;
     }
-//        ID = id;
-//        Arrays.stream(Command.values())
-//                .forEach(command -> COMMAND_MAP.put(command.ID, command));}
+
 }

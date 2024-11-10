@@ -34,6 +34,12 @@ public final class AuthorizationDataSourceImpl implements AuthorizationDataSourc
 
     @Override
     public void save(Collection<AuthorizedUser> userCache) {
-
+        List<String> lines = new ArrayList<>();
+        userCache.forEach(user -> lines.add(serializer.serialize(user)));
+        try {
+            Files.write(path, lines);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

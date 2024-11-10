@@ -2,6 +2,6 @@ package vending.machine.repository;
 
 import vending.machine.data.AuthorizedUser;
 
-public interface AuthorizedRepository {
+public interface AuthorizationRepository {
     AuthorizedUser findUserById(int userId);
 }

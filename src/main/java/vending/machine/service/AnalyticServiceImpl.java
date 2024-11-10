@@ -3,6 +3,7 @@ package vending.machine.service;
 import vending.machine.data.Sale;
 import vending.machine.repository.AnalyticsRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ public final class AnalyticServiceImpl implements AnalyticService {
     public List<Sale> topThreeMostSellingProducts() {
         return repository.getAllSales()
                 .stream()
-                .sorted((s1,s2) -> Integer.compare(s1.numberOfSales(),s2.numberOfSales()))
+                .sorted(Comparator.comparingInt(Sale::numberOfSales).reversed())
                 .limit(3)
                 .collect(Collectors.toList());
     }

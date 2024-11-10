@@ -46,8 +46,8 @@ public final class ProductServiceImpl implements ProductService {
     @Override
     public void addStock(int productId, int quantity) throws ProductNotFoundException, MachineOverloadException {
         Product product = getProduct(productId);
-        if (product.quantity() + quantity >= 10) throw new MachineOverloadException();
-        productRepository.saveProduct(product.withQuantity(product.quantity() + 1));
+        if (product.quantity() + quantity > 10) throw new MachineOverloadException();
+        productRepository.saveProduct(product.withQuantity(product.quantity() + quantity));
     }
 
     @Override
@@ -75,6 +75,7 @@ public final class ProductServiceImpl implements ProductService {
 
     @Override
     public void removeProduct(int productId) {
+        //TODO Check if product id exist
         productRepository.removeProduct(productId);
     }
 

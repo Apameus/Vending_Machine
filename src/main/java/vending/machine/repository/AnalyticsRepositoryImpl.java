@@ -41,6 +41,11 @@ public final class AnalyticsRepositoryImpl implements AnalyticsRepository {
         return salesCache.values().stream().toList();
     }
 
+    @Override
+    public Earnings getEarnings() {
+        return earnings;
+    }
+
     Sale getSale(int productId){
         return salesCache.get(productId);
     }

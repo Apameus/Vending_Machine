@@ -28,7 +28,13 @@ public final class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public void removeProduct(int productId) {
+        productCache.remove(productId);
+    }
+
+    @Override
     public List<Product> findAllProducts() {
         return List.copyOf(productCache.values());
     }
+
 }

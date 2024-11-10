@@ -7,7 +7,9 @@ import java.util.List;
 public interface ProductRepository {
     Product findProductById(int productId);
 
+    List<Product> findAllProducts();
+
     void saveProduct(Product product);
 
-    List<Product> findAllProducts();
+    void removeProduct(int productId);
 }

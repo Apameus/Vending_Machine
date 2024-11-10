@@ -1,5 +1,7 @@
 package vending.machine.ui;
 
+import vending.machine.data.Command;
+import vending.machine.exception.AuthorizationFailedException;
 import vending.machine.exception.NotEnoughMoneyException;
 import vending.machine.exception.ProductNotFoundException;
 import vending.machine.exception.ZeroProductStockException;
@@ -25,26 +27,54 @@ public final class TerminalUI {
 
     public void start() {
         while (true) {
-            printProducts(productService.listProducts());
+            printProducts();
             var action = console.readLine("EXIT or productId: ");
             if (action.equalsIgnoreCase("EXIT")) break;
-            if (action.length() == 8) authorizeUser(action);
+            if (falseAuthorizationCheck(action)) break;
 
-            int productId;
-            try {
-                productId = Integer.parseUnsignedInt(action);
-            } catch (NumberFormatException _) {
-                console.printf("Invalid productId%n");
-                continue;
-            }
-            retrieveProduct(productId);
+            buyProduct(action);
         }
     }
 
-    private void authorizeUser(String input) {
+    //TODO: Refactor
+
+    private boolean falseAuthorizationCheck(String input) {
+        if (input.length() != 8) return false;
         int id = Integer.parseInt(input);
         int password = Integer.parseInt(console.readLine("Password: "));
-        authorizationService.authorizeUser(id, password);
+        try {
+            authorizationService.authorizeUser(id, password);
+            console.printf("%n WELCOME %n");
+            showCommands();
+            Integer cmdId = Integer.parseInt(console.readLine("Give command ID: "));
+            commandAction(cmdId, id);
+        } catch (AuthorizationFailedException e) {
+            console.printf("Authorization Failed!");
+        }
+        return true;
+    }
+
+    private void commandAction(Integer cmdId, int userID) {
+        while (cmdId != 00){
+
+        }
+    }
+
+    private void showCommands() {
+        for (Command command : Command.values()){
+            console.printf("%n" + command.id() + " ," + command.name());
+        } console.printf("%n");
+    }
+
+    private void buyProduct(String action) {
+        int productId;
+        try {
+            productId = Integer.parseUnsignedInt(action);
+        } catch (NumberFormatException _) {
+            console.printf("Invalid productId%n");
+            return;
+        }
+        retrieveProduct(productId);
     }
 
     void retrieveProduct(int productId) {
@@ -65,7 +95,8 @@ public final class TerminalUI {
         //check_input
     }
 
-    private void printProducts(List<Product> products) {
+    private void printProducts() {
+        List<Product> products = productService.listProducts();
         var builder = new StringBuilder();
         var formatter = new Formatter(builder);
 

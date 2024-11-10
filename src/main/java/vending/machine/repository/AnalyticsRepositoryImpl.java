@@ -46,6 +46,11 @@ public final class AnalyticsRepositoryImpl implements AnalyticsRepository {
         return earnings;
     }
 
+    @Override
+    public void refreshAvailableEarnings() {
+        earnings = earnings.refreshAvailableEarnings();
+    }
+
     Sale getSale(int productId){
         return salesCache.get(productId);
     }

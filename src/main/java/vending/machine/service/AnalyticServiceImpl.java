@@ -29,6 +29,8 @@ public final class AnalyticServiceImpl implements AnalyticService {
 
     @Override
     public int retrieveAvailableEarnings() {
-        return repository.getEarnings().availableEarnings();
+        int availableEarnings = repository.getEarnings().availableEarnings();
+        repository.refreshAvailableEarnings();
+        return availableEarnings;
     }
 }

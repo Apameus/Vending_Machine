@@ -14,4 +14,6 @@ public interface AnalyticsRepository {
     List<Sale> getAllSales();
 
     Earnings getEarnings();
+
+    void refreshAvailableEarnings();
 }
